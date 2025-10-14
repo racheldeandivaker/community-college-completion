@@ -1,0 +1,86 @@
+---
+title: "Top Five Certificates and Associate Degrees across FL Community Colleges"
+author: "Rachel Dean Divaker"
+date: "2025-10-14"
+output: pdf_document
+---
+Load libraries
+```{r setup, include=FALSE}
+
+#load libraries
+
+library(dplyr)
+library(educationdata)
+
+
+```
+
+Importing and cleaning data from directory and program completions using CIP_6 codes
+
+```{r}
+# Import directory dataset
+dir_data <- get_education_data(
+  level = "college-university",
+  source = "ipeds",
+  topic = "directory",
+  filters = list(year = 2022)
+)
+
+# Select variables
+clean_dir <- dir_data %>%
+  select(unitid, year, fips, sector, inst_name) %>%
+  filter(fips == 12, sector == 1, inst_name > 0)
+
+```
+
+```{r}
+#Import completions-cip-6 dataset
+
+comp_data <- get_education_data(
+  level = "college-university",
+  source = "ipeds",
+  topic = "completions-cip-6",
+  filters = list(year = 2022)
+)
+
+
+# Select and filter variables
+clean_comp <- comp_data %>%
+  select(unitid, cipcode_6digit, award_level, fips, year) %>%
+  filter(fips == 12,cipcode_6digit > 0, award_level %in% c(4, 30, 31, 32, 33))
+
+```
+
+Merging Directory and CIPcode 
+```{r}
+#merging dataframes
+
+merged_data <- left_join(clean_comp, clean_dir, by = c("unitid", "year", "fips"))
+
+
+```
+
+Get top five Associate programs for each college
+```{r}
+# Filter to Associate Degree programs
+assoc_degrees <- merged_data %>%
+  filter(award_level == 4)
+
+# Count completions per college + program
+program_counts <- assoc_degrees %>%
+  group_by(inst_name, cipcode_6digit) %>%
+  summarise(total_completions = n(), .groups = "drop")
+
+# Top 5 programs per college
+top_5_programs <- program_counts %>%
+  group_by(inst_name) %>%
+  slice_max(order_by = total_completions, n = 5, with_ties = FALSE) %>%
+  arrange(inst_name, desc(total_completions))
+
+# result
+head(top_5_programs, 10)
+
+
+
+
+```

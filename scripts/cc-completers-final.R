@@ -22,9 +22,8 @@ if (USE_EXISTING_CSV) {
   print(head(cc_data))
 
   cat("\n✓ Data frame 'cc_data' is available in the R environment\n")
-  cat("\nTo fetch fresh data from API, set USE_EXISTING_CSV <- FALSE at the top of this script\n")
-
-} else {
+  cat("\nTo fetch fresh data from API, set USE_EXISTING_CSV <- FALSE at the top of this script\n")} 
+else:
   # Fetch from API (original code below)
   cat("Fetching data from API...\n")
 
