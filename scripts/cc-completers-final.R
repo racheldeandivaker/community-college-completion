@@ -166,3 +166,8 @@ if (USE_EXISTING_CSV) {
   print(head(cc_data))
   cat("\n✓ Data frames 'cc_data' and 'df_merged' are available in the R environment\n")
 }
+
+
+
+
+cc_data <- read.csv("/Users/racheldean/Documents/GitHub/florida-cc-degree-scraper/data/cc_completers_merged.csv")
