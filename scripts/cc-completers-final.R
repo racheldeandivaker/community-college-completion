@@ -1,11 +1,13 @@
 ### Import data from 2022 (latest year available)
 
-# Load required libraries
+# Load libraries
 library(httr)
 library(jsonlite)
 library(dplyr)
 
 # Option to read from existing CSV instead of API
+# Had issues with API in R so importing my python csv. 
+
 USE_EXISTING_CSV <- TRUE  # Set to FALSE to fetch from API
 
 if (USE_EXISTING_CSV) {
@@ -90,22 +92,14 @@ if (USE_EXISTING_CSV) {
   url_comp <- "https://educationdata.urban.org/api/v1/college-university/ipeds/completers/2022/?fips=12"
   df_comp <- fetch_all_pages(url_comp)
 
-  ### Create summary of fetched data
+  ### Merge datasets with multiple variables for matching
 
-  cat(sprintf("\nCIP data: %d total records\n", nrow(df_cip)))
-  cat(sprintf("Directory data: %d total records\n", nrow(df_dir)))
-  cat(sprintf("Completers data: %d total records\n", nrow(df_comp)))
-
-  ### Merge datasets with multiple keys for precise matching
-
-  cat("Merging full datasets...\n")
-
-  # Step 1: Merge CIP with Directory on unitid and year
+  # Merge CIP with Directory on unitid and year
   df_merged <- df_cip %>%
     left_join(df_dir, by = c("unitid", "year"))
   cat(sprintf("After merging CIP + Directory: %d rows x %d columns\n", nrow(df_merged), ncol(df_merged)))
 
-  # Step 2: Merge with Completers on unitid, year, race, and sex
+  # Merge with Completers on unitid, year, race, and sex
   df_merged <- df_merged %>%
     left_join(df_comp, by = c("unitid", "year", "race", "sex"))
   cat(sprintf("After merging with Completers: %d rows x %d columns\n", nrow(df_merged), ncol(df_merged)))
@@ -128,7 +122,7 @@ if (USE_EXISTING_CSV) {
   df_merged <- df_merged %>%
     filter(award_level %in% c(4, 30, 31, 32, 33))
 
-  # Create readable labels
+  # Create labels
   df_merged <- df_merged %>%
     mutate(
       state = "Florida",
@@ -143,31 +137,54 @@ if (USE_EXISTING_CSV) {
   cat(sprintf("\nFiltered data (%d rows):\n", nrow(df_merged)))
   print(head(df_merged, 10))
 
-  ### Save to CSV and keep in environment
+  ### Save to CSV / keep in environment
 
   # Create data directory if it doesn't exist
   if (!dir.exists("data")) {
     dir.create("data")
   }
 
-  # Create final dataset with a safe variable name (avoiding 'df' which is a built-in function)
+  # Create final dataset
   cc_data <- df_merged
 
   # Save to CSV
   write.csv(cc_data, "data/cc_completers_merged.csv", row.names = FALSE)
   cat("\nSaved to data/cc_completers_merged.csv\n")
 
-  # Display summary of final dataset
-  cat("\n=== Final Dataset Summary ===\n")
-  cat(sprintf("Dimensions: %d rows x %d columns\n", nrow(cc_data), ncol(cc_data)))
-  cat("\nColumn names:\n")
-  print(names(cc_data))
-  cat("\nFirst few rows:\n")
-  print(head(cc_data))
-  cat("\n✓ Data frames 'cc_data' and 'df_merged' are available in the R environment\n")
-}
+  
+  
+  #Analysis: 
+  
+  
+  # Filter for Associates degrees
+df_associates <- cc_data %>%
+    filter(award_level == 4)
+  
+  # Remove invalid values (-1, -2, -3)
+  df_associates <- df_associates %>%
+    filter(completers >= 0)
+  
+  # Group by institution and CIP code, sum completers. 
+  df_grouped <- df_associates %>%
+    group_by(inst_name, cipcode_6digit) %>%
+    summarise(total_completers = sum(completers, na.rm = TRUE)) %>%
+    ungroup()
+  
+  # Top 5 programs per institution
+  df_top5 <- df_grouped %>%
+    group_by(inst_name) %>%
+    arrange(desc(total_completers)) %>%
+    slice_head(n = 5) %>%
+    ungroup()
+  
+  # View results
+  print(paste("Total institutions:", n_distinct(df_top5$inst_name)))
+  print(paste("Total programs:", nrow(df_top5)))
+  head(df_top5, 15)
+  
+  # Save to CSV
+  write.csv(df_top5, "data/top5_associates_by_college.csv", row.names = FALSE)
 
 
-
-
-cc_data <- read.csv("/Users/racheldean/Documents/GitHub/florida-cc-degree-scraper/data/cc_completers_merged.csv")
+#still need to push to rachel's github - will remove this!
+  #cc_data <- read.csv("/Users/racheldean/Documents/GitHub/florida-cc-degree-scraper/data/cc_completers_merged.csv")
