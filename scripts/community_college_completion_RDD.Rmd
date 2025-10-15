@@ -26,10 +26,7 @@ dir_data <- get_education_data(
   filters = list(year = 2022)
 )
 
-# Select variables
-clean_dir <- dir_data %>%
-  select(unitid, year, fips, sector, inst_name) %>%
-  filter(fips == 12, sector == 1, inst_name > 0)
+
 
 ```
 
@@ -43,6 +40,22 @@ comp_data <- get_education_data(
   filters = list(year = 2022)
 )
 
+```
+
+Cleaning data:
+
+```{r}
+#directory
+
+# Select and filter variables
+clean_dir <- dir_data %>%
+  select(unitid, year, fips, sector, inst_name) %>%
+  filter(fips == 12, sector == 1, inst_name > 0)
+
+```
+
+```{r}
+#CIP
 
 # Select and filter variables
 clean_comp <- comp_data %>%
