@@ -68,7 +68,7 @@ clean_dir <- dir_data %>%
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
-  filter(fips == 12, cipcode_6digit > 0, award_level %in% c(1, 2, 4, 30, 31, 32, 33), awards_6digit > 0)
+  filter(fips == 12, cipcode_6digit > 0, cipcode_6digit != 99, award_level %in% c(1, 2, 4, 30, 31, 32, 33), awards_6digit > 0)
 
 ```
 
@@ -102,7 +102,7 @@ top_5_assoc <- assoc_program_totals %>%
 print("Top 5 Associate Degree Programs by College:")
 head(top_5_assoc, 20)
 
-##ask Zyra- I think I need to filter out 99? I believe 99 is all programs combined? 
+
 
 ```
 
