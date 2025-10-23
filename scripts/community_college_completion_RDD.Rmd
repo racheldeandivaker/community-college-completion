@@ -17,7 +17,7 @@ library(educationdata)
 
 ```
 
-Importing and cleaning data from directory and program completions using CIP_6 codes. 2022 is the last available year. 
+Importing and cleaning data from directory and program completions using CIP_6 codes. 2022 is the most recent year available. 
 
 ```{r}
 # Import directory dataset
@@ -64,7 +64,7 @@ clean_dir <- dir_data %>%
 #award_level: 1, 2, 30, 31, 32 = certificates
 #award_level: 4 = associate degrees
 #awards_6digit: above 0 - completer
-#cipcode_6digit: above 0 - specific program name
+#cipcode_6digit: above 0 - specific program name, removing 99 (it appears to include all programs/ miscellaneous category)
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
@@ -98,7 +98,7 @@ top_5_assoc <- assoc_program_totals %>%
   slice_max(order_by = total_awards, n = 5, with_ties = TRUE) %>%
   arrange(inst_name, desc(total_awards))
 
-# Display results
+# Results
 print("Top 5 Associate Degree Programs by College:")
 head(top_5_assoc, 20)
 
@@ -108,11 +108,11 @@ head(top_5_assoc, 20)
 
 Get top five Certificate programs for each college
 ```{r}
-# Filter to Certificate programs (award_levels 1, 2, 30, 31, 32, 33)
+# Filter to Certificate programs (award_levels 1, 2, 30, 31, 32, 33)- double check with Zyra on this variable.
 certificates <- merged_data %>%
   filter(award_level %in% c(1, 2, 30, 31, 32, 33))
 
-# Sum actual awards per college + program
+# Get total awards per college + program
 cert_program_totals <- certificates %>%
   group_by(inst_name, cipcode_6digit) %>%
   summarise(total_awards = sum(awards_6digit, na.rm = TRUE), .groups = "drop")
@@ -123,7 +123,7 @@ top_5_certs <- cert_program_totals %>%
   slice_max(order_by = total_awards, n = 5, with_ties = TRUE) %>%
   arrange(inst_name, desc(total_awards))
 
-# Display results
+# Results
 print("Top 5 Certificate Programs by College:")
 head(top_5_certs, 20)
 
