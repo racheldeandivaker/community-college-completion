@@ -6,7 +6,7 @@ output: pdf_document
 ---
 Install packages and load libraries
 ```{r setup, include=FALSE}
-#install packages (only run once, then comment out)
+#install packages (only run once then comment out)
 # install.packages('educationdata')
 
 #load libraries
@@ -17,7 +17,7 @@ library(educationdata)
 
 ```
 
-Importing and cleaning data from directory and program completions using CIP_6 codes
+Importing and cleaning data from directory and program completions using CIP_6 codes. 2022 is the last available year. 
 
 ```{r}
 # Import directory dataset
@@ -60,6 +60,12 @@ clean_dir <- dir_data %>%
 #CIP
 
 # Select and filter variables
+#fips: 12 is Florida 
+#award_level: 1, 2, 30, 31, 32 = certificates
+#award_level: 4 = associate degrees
+#awards_6digit: above 0 - completer
+#cipcode_6digit: above 0 - specific program name
+
 clean_comp <- comp_data %>%
   select(unitid, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
   filter(fips == 12, cipcode_6digit > 0, award_level %in% c(1, 2, 4, 30, 31, 32, 33), awards_6digit > 0)
@@ -81,7 +87,7 @@ Top five Associate programs for each college:
 assoc_degrees <- merged_data %>%
   filter(award_level == 4)
 
-# Sum actual awards per college + program
+# Get total awards per college + program
 assoc_program_totals <- assoc_degrees %>%
   group_by(inst_name, cipcode_6digit) %>%
   summarise(total_awards = sum(awards_6digit, na.rm = TRUE), .groups = "drop")
@@ -89,12 +95,14 @@ assoc_program_totals <- assoc_degrees %>%
 # Top 5 Associate programs per college
 top_5_assoc <- assoc_program_totals %>%
   group_by(inst_name) %>%
-  slice_max(order_by = total_awards, n = 5, with_ties = FALSE) %>%
+  slice_max(order_by = total_awards, n = 5, with_ties = TRUE) %>%
   arrange(inst_name, desc(total_awards))
 
 # Display results
 print("Top 5 Associate Degree Programs by College:")
 head(top_5_assoc, 20)
+
+##ask Zyra- I think I need to filter out 99? I believe 99 is all programs combined? 
 
 ```
 
@@ -112,7 +120,7 @@ cert_program_totals <- certificates %>%
 # Top 5 Certificate programs per college
 top_5_certs <- cert_program_totals %>%
   group_by(inst_name) %>%
-  slice_max(order_by = total_awards, n = 5, with_ties = FALSE) %>%
+  slice_max(order_by = total_awards, n = 5, with_ties = TRUE) %>%
   arrange(inst_name, desc(total_awards))
 
 # Display results
