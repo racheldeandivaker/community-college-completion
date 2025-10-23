@@ -4,8 +4,10 @@ author: "Rachel Dean Divaker"
 date: "2025-10-14"
 output: pdf_document
 ---
-Load libraries
+Install packages and load libraries
 ```{r setup, include=FALSE}
+#install packages (only run once, then comment out)
+# install.packages('educationdata')
 
 #load libraries
 
@@ -50,7 +52,7 @@ Cleaning data:
 # Select and filter variables
 clean_dir <- dir_data %>%
   select(unitid, year, fips, sector, inst_name) %>%
-  filter(fips == 12, sector == 1, inst_name > 0)
+  filter(fips == 12, sector == 1, !is.na(inst_name))
 
 ```
 
@@ -59,8 +61,8 @@ clean_dir <- dir_data %>%
 
 # Select and filter variables
 clean_comp <- comp_data %>%
-  select(unitid, cipcode_6digit, award_level, fips, year) %>%
-  filter(fips == 12,cipcode_6digit > 0, award_level %in% c(4, 30, 31, 32, 33))
+  select(unitid, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
+  filter(fips == 12, cipcode_6digit > 0, award_level %in% c(1, 2, 4, 30, 31, 32, 33), awards_6digit > 0)
 
 ```
 
@@ -73,27 +75,48 @@ merged_data <- left_join(clean_comp, clean_dir, by = c("unitid", "year", "fips")
 
 ```
 
-Get top five Associate programs for each college
+Top five Associate programs for each college:
 ```{r}
-# Filter to Associate Degree programs
+# Filter to Associate Degree programs (award_level = 4)
 assoc_degrees <- merged_data %>%
   filter(award_level == 4)
 
-# Count completions per college + program
-program_counts <- assoc_degrees %>%
+# Sum actual awards per college + program
+assoc_program_totals <- assoc_degrees %>%
   group_by(inst_name, cipcode_6digit) %>%
-  summarise(total_completions = n(), .groups = "drop")
+  summarise(total_awards = sum(awards_6digit, na.rm = TRUE), .groups = "drop")
 
-# Top 5 programs per college
-top_5_programs <- program_counts %>%
+# Top 5 Associate programs per college
+top_5_assoc <- assoc_program_totals %>%
   group_by(inst_name) %>%
-  slice_max(order_by = total_completions, n = 5, with_ties = FALSE) %>%
-  arrange(inst_name, desc(total_completions))
+  slice_max(order_by = total_awards, n = 5, with_ties = FALSE) %>%
+  arrange(inst_name, desc(total_awards))
 
-# result
-head(top_5_programs, 10)
+# Display results
+print("Top 5 Associate Degree Programs by College:")
+head(top_5_assoc, 20)
 
+```
 
+Get top five Certificate programs for each college
+```{r}
+# Filter to Certificate programs (award_levels 1, 2, 30, 31, 32, 33)
+certificates <- merged_data %>%
+  filter(award_level %in% c(1, 2, 30, 31, 32, 33))
 
+# Sum actual awards per college + program
+cert_program_totals <- certificates %>%
+  group_by(inst_name, cipcode_6digit) %>%
+  summarise(total_awards = sum(awards_6digit, na.rm = TRUE), .groups = "drop")
+
+# Top 5 Certificate programs per college
+top_5_certs <- cert_program_totals %>%
+  group_by(inst_name) %>%
+  slice_max(order_by = total_awards, n = 5, with_ties = FALSE) %>%
+  arrange(inst_name, desc(total_awards))
+
+# Display results
+print("Top 5 Certificate Programs by College:")
+head(top_5_certs, 20)
 
 ```
