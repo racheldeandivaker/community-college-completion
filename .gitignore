@@ -35,9 +35,5 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# Spec Workflow - ignore temporary files, keep essential docs
-.spec-workflow/approvals/
-.spec-workflow/config.example.toml
-.spec-workflow/.snapshots/
-.spec-workflow/templates/
-.spec-workflow/user-templates/README.md
+# Spec Workflow - ignore entire directory
+.spec-workflow/
