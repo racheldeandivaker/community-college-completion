@@ -64,8 +64,13 @@ cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 # Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
 clean_dir <- dir_data %>%
   select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
-  filter(fips == 12, opeid != "-2", control == 1, ((c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23) & c21basic > 0, !is.na(instnm))
-# Keeps FL, public institutions, removes NAs from institutions
+  filter(
+    fips == 12,              # Florida only
+    opeid != "-2",           # Valid OPEID
+    control == 1,            # Public institutions only
+    (c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23,  # Community college Carnegie classifications
+    !is.na(instnm)          # Remove missing institution names
+  )
 
 cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_dir)))
 
@@ -74,15 +79,22 @@ cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_di
 # Variable name updates for .dta files: award_level: awlevel, cipcode_6digit: cipcode, awards_6digit: ctotalt
 # Note: Demographics pre-aggregated in .dta files - using ctotalt (total completers, all demographics)
 
-# awlevel: 2 = certificates (2023 .dta file coding)
-# awlevel: 3 = associate degrees (2023 .dta file coding)
+# awlevel: 2 = certificates 
+# awlevel: 3 = associate degrees
 # ctotalt: total completers (equivalent to sex==99, race==99 from API)
 # cipcode: CIP code for program, removing 99 (miscellaneous category)
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode, awlevel, ctotalt) %>%
-  filter(!is.na(cipcode), !is.na(awlevel), !is.na(ctotalt),
-         cipcode > 0, cipcode != 99, awlevel %in% c(2, 3), ctotalt > 0)
+  filter(
+    !is.na(cipcode),         # Remove missing CIP codes
+    !is.na(awlevel),         # Remove missing award levels
+    !is.na(ctotalt),         # Remove missing completion counts
+    cipcode > 0,             # Valid CIP codes only
+    cipcode != 99,           # Exclude miscellaneous category
+    awlevel %in% c(2, 3),    # Certificates (2) and associate degrees (3) only
+    ctotalt > 0              # Programs with completions only
+  )
 
 cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 
@@ -90,11 +102,8 @@ cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 # Analysis: Merge and Rank Top Programs
 # ============================================================================
 #
-# Merging Directory and CIPcode and getting top five certificate and
+# Merging Directory and CIPcode data and getting top five certificate and
 # associate programs at each FL community college
-
-# Merging dataframes
-# Note: Joining on unitid
 
 merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
   group_by(opeid, awlevel) %>%

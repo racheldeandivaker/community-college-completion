@@ -60,8 +60,13 @@ Cleaning data:
 # Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
 clean_dir <- dir_data %>%
   select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
-  filter(fips == 12, opeid != "-2", control == 1, ((c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23) & c21basic > 0, !is.na(instnm))
-#keeps FL, public institutions, removes NAs from institutions
+  filter(
+    fips == 12,              # Florida only
+    opeid != "-2",           # Valid OPEID
+    control == 1,            # Public institutions only
+    (c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23,  # Community college Carnegie classifications
+    !is.na(instnm)          # Remove missing institution names
+  )
 
 cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_dir)))
 ```
@@ -81,8 +86,15 @@ cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_di
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode, awlevel, ctotalt) %>%
-  filter(!is.na(cipcode), !is.na(awlevel), !is.na(ctotalt),
-         cipcode > 0, cipcode != 99, awlevel %in% c(2, 3), ctotalt > 0)
+  filter(
+    !is.na(cipcode),         # Remove missing CIP codes
+    !is.na(awlevel),         # Remove missing award levels
+    !is.na(ctotalt),         # Remove missing completion counts
+    cipcode > 0,             # Valid CIP codes only
+    cipcode != 99,           # Exclude miscellaneous category
+    awlevel %in% c(2, 3),    # Certificates (2) and associate degrees (3) only
+    ctotalt > 0              # Programs with completions only
+  )
 
 cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 ```
