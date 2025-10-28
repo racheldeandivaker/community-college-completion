@@ -18,7 +18,9 @@ Install packages and load libraries
 library(dplyr)
 library(haven)  # For reading .dta files from IPEDtaS
 
-
+# Set up data paths (relative to this script's location)
+# Assumes IPEDtaS repository is a sibling directory to community-college-completion
+IPEDTAS_DATA_PATH <- "../../IPEDtaS/data"
 ```
 
 ```{r test-2023-directory, eval=FALSE, include=FALSE}
@@ -363,6 +365,7 @@ Importing and cleaning data from directory and program completions using 2023 IP
 **Variable Mapping Notes**:
 - Directory data: `inst_name` → `instnm`, `cc_basic_2021` → `c21basic`, `inst_control` → `control`
 - Completions data: `award_level` → `awlevel`, `cipcode_6digit` → `cipcode`, `awards_6digit` → `ctotalt`
+- Award level codes in 2023 .dta files: `awlevel=2` (certificates), `awlevel=3` (associate degrees)
 - Demographics: Pre-aggregated in `.dta` files (`ctotalt` = total completers, equivalent to `sex==99, race==99` in API)
 
 ```{r}
@@ -407,14 +410,15 @@ cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_di
 # Note: Demographics pre-aggregated in .dta files - using ctotalt (total completers, all demographics)
 # This is equivalent to filtering sex == 99, race == 99 in the API data
 
-#awlevel: 32 = certificates (keeping only level 32)
-#awlevel: 4 = associate degrees
+#awlevel: 2 = certificates (2023 .dta file coding)
+#awlevel: 3 = associate degrees (2023 .dta file coding)
 #ctotalt: total completers (equivalent to sex==99, race==99 from API)
 #cipcode: CIP code for program, removing 99 (miscellaneous category)
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode, awlevel, ctotalt) %>%
-  filter(cipcode > 0, cipcode != 99, awlevel %in% c(4, 32), ctotalt > 0)
+  filter(!is.na(cipcode), !is.na(awlevel), !is.na(ctotalt),
+         cipcode > 0, cipcode != 99, awlevel %in% c(2, 3), ctotalt > 0)
 
 cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 ```
