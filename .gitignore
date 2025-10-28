@@ -39,3 +39,4 @@ vignettes/*.pdf
 .spec-workflow/approvals/
 .spec-workflow/config.example.toml
 .spec-workflow/.snapshots/
+.spec-workflow/templates/
