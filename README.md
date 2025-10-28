@@ -61,14 +61,16 @@ You can run the analysis using either the R Markdown document (for reports) or t
 
 ### Option 2: R Script (Recommended for Programmatic Use)
 
-1. Run the R script from the R console:
+1. Run the R script from the R console (from the scripts directory):
    ```r
-   source("scripts/fl_community_college_programs.R")
+   setwd("scripts")
+   source("fl_community_college_programs.R")
    ```
 
-2. The script can also be run from the command line:
+2. Alternatively, run from the command line (from the scripts directory):
    ```bash
-   Rscript scripts/fl_community_college_programs.R
+   cd scripts
+   Rscript fl_community_college_programs.R
    ```
 
 ### Analysis Steps

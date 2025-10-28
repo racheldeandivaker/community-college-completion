@@ -18,9 +18,9 @@ Install packages and load libraries
 library(dplyr)
 library(haven)  # For reading .dta files from IPEDtaS
 
-# Set up data paths (relative to this script's location)
+# Set up data paths (relative to project root)
 # Data files are stored in the project's data/ directory
-DATA_PATH <- "../data"
+DATA_PATH <- "data"
 ```
 
 ## Data Import
