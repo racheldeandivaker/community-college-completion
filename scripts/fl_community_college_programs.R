@@ -3,13 +3,13 @@
 # ============================================================================
 # Author: Rachel Dean Divaker
 # Date: 2025-10-28
-#
+
 # Description:
 # This script analyzes community college completion data for Florida
 # institutions to identify the top 5 certificate and associate degree programs
 # at each public community college based on completion counts from the 2023
 # IPEDS (Integrated Postsecondary Education Data System) data.
-#
+
 # Data Source:
 # 2023 IPEDS data files (HD2023.dta and C2023_a.dta) obtained via IPEDtaS
 # (https://github.com/ttalVlatt/IPEDtaS), which automates downloading and
@@ -31,10 +31,10 @@ DATA_PATH <- "../data"
 # ============================================================================
 # Data Import
 # ============================================================================
-#
+
 # Importing and cleaning data from directory and program completions using
 # 2023 IPEDS data.
-#
+
 # Variable Notes:
 # - Directory data: institution name: instnm, carnegie classification: c21basic, institution control: control
 # - Completions data: award level : awlevel, cipcode_6digit: cipcode, awards_6digit: ctotalt
@@ -55,7 +55,7 @@ cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 # ============================================================================
 # Data Cleaning
 # ============================================================================
-#
+
 # Cleaning data: filtering for Florida community colleges and
 # certificate and associate degree programs.
 
@@ -101,7 +101,7 @@ cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 # ============================================================================
 # Analysis: Merge and Rank Top Programs
 # ============================================================================
-#
+
 # Merging Directory and CIPcode data and getting top five certificate and
 # associate programs at each FL community college
 
