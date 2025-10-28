@@ -103,4 +103,4 @@ merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
 cat(sprintf("Merged data: %d top programs\n", nrow(merged_data)))
 cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
 
-##### END SCRIPT ####
+##### END SCRIPT #####
