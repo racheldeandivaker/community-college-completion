@@ -92,3 +92,9 @@ community-college-completion/
 - **Award Level Coding**: The 2023 IPEDS .dta files use `awlevel=2` for certificates and `awlevel=3` for associate degrees (different from prior years' coding)
 - **Demographics**: The .dta files contain pre-aggregated demographic totals (ctotalt = total completers across all demographics)
 - **Data Currency**: This analysis uses the most recent IPEDS data available (2023)
+
+## Citation
+
+If you use the IPEDS data files in this project, please cite:
+
+Capaldi, M. J. (2024). IPEDtaS: Automagically Download Labeled .dta IPEDS Files in Stata and R (Version 0.1) [Computer software]. https://doi.org/10.5281/zenodo.13388846
