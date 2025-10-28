@@ -61,7 +61,7 @@ cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 
 # Directory data
 # Select and filter variables
-# Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
+
 clean_dir <- dir_data %>%
   select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
   filter(
@@ -81,7 +81,7 @@ cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_di
 
 # awlevel: 2 = certificates 
 # awlevel: 3 = associate degrees
-# ctotalt: total completers (equivalent to sex==99, race==99 from API)
+# ctotalt: total completers
 # cipcode: CIP code for program, removing 99 (miscellaneous category)
 
 clean_comp <- comp_data %>%
