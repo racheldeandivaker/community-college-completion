@@ -34,3 +34,8 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+# Spec Workflow - ignore temporary files, keep essential docs
+.spec-workflow/approvals/
+.spec-workflow/config.example.toml
+.spec-workflow/.snapshots/
