@@ -50,7 +50,7 @@ install.packages('haven')
 
 1. Open the R Markdown script in RStudio:
    ```
-   scripts/community_college_completion_RDD.Rmd
+   scripts/fl_community_college_programs.Rmd
    ```
 
 2. Run all chunks to execute the analysis
@@ -82,7 +82,7 @@ community-college-completion/
 │   ├── HD2023.dta                 # IPEDS directory data
 │   └── C2023_a.dta                # IPEDS completions data
 ├── scripts/                       # R scripts and R Markdown files
-│   └── community_college_completion_RDD.Rmd  # Main analysis
+│   └── fl_community_college_programs.Rmd  # Main analysis
 └── README.md                      # This file
 ```
 
