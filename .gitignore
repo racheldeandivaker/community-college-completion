@@ -40,3 +40,4 @@ vignettes/*.pdf
 .spec-workflow/config.example.toml
 .spec-workflow/.snapshots/
 .spec-workflow/templates/
+.spec-workflow/user-templates/README.md
