@@ -80,8 +80,7 @@ Output is saved to: `data/top5_associates_by_college.csv`
 community-college-completion/
 ├── data/                           # Data files (managed with Git LFS)
 │   ├── HD2023.dta                 # IPEDS directory data
-│   ├── C2023_a.dta               # IPEDS completions data
-│   └── top5_associates_by_college.csv  # Analysis output
+│   └── C2023_a.dta                # IPEDS completions data
 ├── scripts/                       # R scripts and R Markdown files
 │   └── community_college_completion_RDD.Rmd  # Main analysis
 └── README.md                      # This file
