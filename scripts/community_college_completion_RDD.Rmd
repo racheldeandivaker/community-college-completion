@@ -4,11 +4,6 @@ author: "Rachel Dean Divaker"
 date: "2025-10-14"
 output: pdf_document
 ---
-```{r setup, include=FALSE}
-
-
-
-```
 
 
 Install packages and load libraries
