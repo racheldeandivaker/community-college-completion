@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Created standalone R script version (`fl_community_college_programs.R`) for programmatic use
+- Added documentation for both R Markdown and R script execution options
+
 ### Changed
 
 - Renamed primary analysis file from `community_college_completion_RDD.Rmd` to `fl_community_college_programs.Rmd` for better clarity and to follow snake_case naming convention
-- Updated all documentation references to reflect renamed file
+- Updated all documentation references to reflect renamed file and new R script option
 
 ### Removed
 

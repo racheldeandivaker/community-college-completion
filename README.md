@@ -48,6 +48,10 @@ install.packages('haven')
 
 ## Running the Analysis
 
+You can run the analysis using either the R Markdown document (for reports) or the standalone R script (for programmatic use):
+
+### Option 1: R Markdown (Recommended for Reports)
+
 1. Open the R Markdown script in RStudio:
    ```
    scripts/fl_community_college_programs.Rmd
@@ -55,12 +59,26 @@ install.packages('haven')
 
 2. Run all chunks to execute the analysis
 
-3. The script will:
-   - Load the 2023 IPEDS data files from `data/`
-   - Filter for Florida public community colleges
-   - Filter for certificate (awlevel=2) and associate degree (awlevel=3) programs
-   - Identify the top 5 programs by completion count at each institution
-   - Generate output showing top programs across all FL community colleges
+### Option 2: R Script (Recommended for Programmatic Use)
+
+1. Run the R script from the R console:
+   ```r
+   source("scripts/fl_community_college_programs.R")
+   ```
+
+2. The script can also be run from the command line:
+   ```bash
+   Rscript scripts/fl_community_college_programs.R
+   ```
+
+### Analysis Steps
+
+Both files perform the same analysis:
+- Load the 2023 IPEDS data files from `data/`
+- Filter for Florida public community colleges
+- Filter for certificate (awlevel=2) and associate degree (awlevel=3) programs
+- Identify the top 5 programs by completion count at each institution
+- Generate output showing top programs across all FL community colleges
 
 ## Output
 
@@ -82,7 +100,8 @@ community-college-completion/
 │   ├── HD2023.dta                 # IPEDS directory data
 │   └── C2023_a.dta                # IPEDS completions data
 ├── scripts/                       # R scripts and R Markdown files
-│   └── fl_community_college_programs.Rmd  # Main analysis
+│   ├── fl_community_college_programs.Rmd  # Main analysis (R Markdown)
+│   └── fl_community_college_programs.R    # Main analysis (R script)
 └── README.md                      # This file
 ```
 
