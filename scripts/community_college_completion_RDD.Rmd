@@ -1,7 +1,7 @@
 ---
 title: "Top Five Certificates and Associate Degrees across FL Community Colleges"
 author: "Rachel Dean Divaker"
-date: "2025-10-14"
+date: "2025-10-28"
 output: pdf_document
 ---
 
@@ -11,40 +11,44 @@ Install packages and load libraries
 # install packages (commenting out after running)
 
 # install.packages('educationdata')
+# install.packages('haven')
 
 # load libraries
 
 library(dplyr)
-library(educationdata)
+library(haven)  # For reading .dta files from IPEDtaS
 
-
+# Set up data paths (relative to this script's location)
+# Data files are stored in the project's data/ directory
+DATA_PATH <- "../data"
 ```
 
-Importing and cleaning data from directory and program completions using CIP_6 codes. 2022 appears to be the most recent year available. 
+## Data Import
+
+Importing and cleaning data from directory and program completions using 2023 IPEDS data.
+
+**Data Source**: 2023 IPEDS data files (HD2023.dta and C2023_a.dta) included in the project's `data/` directory. These files were originally obtained via [IPEDtaS](https://github.com/ttalVlatt/IPEDtaS), which automates downloading and labeling IPEDS data directly from NCES. The `educationdata` R package does not yet support 2023 completions data.
+
+**Variable Notes**:
+- Directory data: inst_name: instnm, cc_basic_2021: c21basic, inst_control: control
+- Completions data: award_level: awlevel, cipcode_6digit: cipcode, awards_6digit: ctotalt
+- Award level codes in 2023 .dta files: awlevel=2 (At least one-year certificates), awlevel=3 (associate degrees)
+- Demographics: Pre-aggregated in .dta files (ctotalt = total completers, equivalent to sex==99, race==99 in API data)
 
 ```{r}
-# Import directory dataset
-dir_data <- get_education_data(
-  level = "college-university",
-  source = "ipeds",
-  topic = "directory",
-  filters = list(year = 2022)
-)
+# Import directory dataset from HD2023.dta
 
+dir_data <- read_dta(file.path(DATA_PATH, "HD2023.dta"))
 
-
+cat(sprintf("Loaded directory data: %d institutions\n", nrow(dir_data)))
 ```
 
 ```{r}
-# Import completions-cip-6 dataset
+# Import completions-cip-6 dataset from C2023_a.dta
 
-comp_data <- get_education_data(
-  level = "college-university",
-  source = "ipeds",
-  topic = "completions-cip-6",
-  filters = list(year = 2022)
-)
+comp_data <- read_dta(file.path(DATA_PATH, "C2023_a.dta"))
 
+cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 ```
 
 Cleaning data:
@@ -53,38 +57,48 @@ Cleaning data:
 # directory
 
 # Select and filter variables
+# Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
 clean_dir <- dir_data %>%
-  select(unitid, year, opeid, fips, sector, inst_control, cc_basic_2021, inst_name) %>%
-  filter(fips == 12, opeid != "-2", inst_control == 1, ((cc_basic_2021 >= 1 & cc_basic_2021 <= 8) | cc_basic_2021 == 14 | cc_basic_2021 == 23) & cc_basic_2021 > 0, !is.na(inst_name))
+  select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
+  filter(fips == 12, opeid != "-2", control == 1, ((c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23) & c21basic > 0, !is.na(instnm))
 #keeps FL, public institutions, removes NAs from institutions
 
+cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_dir)))
 ```
 
 ```{r}
 #CIP
 
 # Select and filter variables
-#fips: 12 is Florida 
-#award_level: 1, 2, 3, 30, 31, 32, 33 = certificates
-#award_level: 4 = associate degrees
-#awards_6digit: above 0 = completer
-#cipcode_6digit: above 0 = specific program name, removing 99 (it appears to include all programs/ miscellaneous category)
+# Variable name updates for .dta files: award_level: awlevel, cipcode_6digit: cipcode, awards_6digit: ctotalt
+# Note: Demographics pre-aggregated in .dta files - using ctotalt (total completers, all demographics)
+# This is equivalent to filtering sex == 99, race == 99 in the API data
+
+#awlevel: 2 = certificates (2023 .dta file coding)
+#awlevel: 3 = associate degrees (2023 .dta file coding)
+#ctotalt: total completers (equivalent to sex==99, race==99 from API)
+#cipcode: CIP code for program, removing 99 (miscellaneous category)
 
 clean_comp <- comp_data %>%
-  select(unitid, sex, race, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
-  filter(fips == 12, sex == 99, race == 99, cipcode_6digit > 0, cipcode_6digit != 99, award_level %in% c(4, 32), awards_6digit > 0) 
+  select(unitid, cipcode, awlevel, ctotalt) %>%
+  filter(!is.na(cipcode), !is.na(awlevel), !is.na(ctotalt),
+         cipcode > 0, cipcode != 99, awlevel %in% c(2, 3), ctotalt > 0)
+
+cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 ```
-
-
 
 
 Merging Directory and CIPcode and getting top five certificate and associate programs at each FL community college
 ```{r}
 #merging dataframes
+# Note: Joining only on unitid since .dta files don't have year/fips in completions data the same way
 
-merged_data <- left_join(clean_dir, clean_comp, by = c("unitid", "year", "fips")) %>% 
-  group_by(opeid, award_level) %>% 
-  slice_max(order_by = awards_6digit, n = 5, with_ties = TRUE)
+merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
+  group_by(opeid, awlevel) %>%
+  slice_max(order_by = ctotalt, n = 5, with_ties = TRUE)
+
+cat(sprintf("Merged data: %d top programs\n", nrow(merged_data)))
+cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
   
   
 
