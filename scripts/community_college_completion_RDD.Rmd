@@ -19,14 +19,15 @@ library(dplyr)
 library(haven)  # For reading .dta files from IPEDtaS
 
 # Set up data paths (relative to this script's location)
-IPEDTAS_DATA_PATH <- "../../IPEDtaS/data"
+# Data files are stored in the project's data/ directory
+DATA_PATH <- "../data"
 ```
 
 ## Data Import
 
 Importing and cleaning data from directory and program completions using 2023 IPEDS data.
 
-**Data Source**: 2023 IPEDS data files downloaded via [IPEDtaS](https://github.com/ttalVlatt/IPEDtaS) script, which automates downloading and labeling IPEDS data directly from NCES. The `educationdata` R package does not yet support 2023 completions data, so we use this alternative approach to access the most current data available.
+**Data Source**: 2023 IPEDS data files (HD2023.dta and C2023_a.dta) included in the project's `data/` directory. These files were originally obtained via [IPEDtaS](https://github.com/ttalVlatt/IPEDtaS), which automates downloading and labeling IPEDS data directly from NCES. The `educationdata` R package does not yet support 2023 completions data.
 
 **Variable Notes**:
 - Directory data: inst_name: instnm, cc_basic_2021: c21basic, inst_control: control
@@ -36,10 +37,8 @@ Importing and cleaning data from directory and program completions using 2023 IP
 
 ```{r}
 # Import directory dataset from HD2023.dta
-# Using IPEDtaS downloaded files instead of educationdata API
-# 2023 completions data not yet available in educationdata package
 
-dir_data <- read_dta(file.path(IPEDTAS_DATA_PATH, "HD2023.dta"))
+dir_data <- read_dta(file.path(DATA_PATH, "HD2023.dta"))
 
 cat(sprintf("Loaded directory data: %d institutions\n", nrow(dir_data)))
 ```
@@ -47,7 +46,7 @@ cat(sprintf("Loaded directory data: %d institutions\n", nrow(dir_data)))
 ```{r}
 # Import completions-cip-6 dataset from C2023_a.dta
 
-comp_data <- read_dta(file.path(IPEDTAS_DATA_PATH, "C2023_a.dta"))
+comp_data <- read_dta(file.path(DATA_PATH, "C2023_a.dta"))
 
 cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 ```
