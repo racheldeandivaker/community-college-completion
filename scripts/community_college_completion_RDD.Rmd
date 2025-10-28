@@ -1,7 +1,7 @@
 ---
 title: "Top Five Certificates and Associate Degrees across FL Community Colleges"
 author: "Rachel Dean Divaker"
-date: "2025-10-14"
+date: "2025-10-28"
 output: pdf_document
 ---
 
@@ -11,40 +11,377 @@ Install packages and load libraries
 # install packages (commenting out after running)
 
 # install.packages('educationdata')
+# install.packages('haven')
 
 # load libraries
 
 library(dplyr)
-library(educationdata)
+library(haven)  # For reading .dta files from IPEDtaS
 
 
 ```
 
-Importing and cleaning data from directory and program completions using CIP_6 codes. 2022 appears to be the most recent year available. 
+```{r test-2023-directory, eval=FALSE, include=FALSE}
+# TASK 1 & 2 TEST CHUNKS - Data availability testing (completed)
+# These chunks were used to determine that 2023 completions data
+# was not available via educationdata API, leading to IPEDtaS approach
+# TASK 1 TEST CHUNK - Testing 2023 directory data availability
+# Instructions: Run this chunk interactively in RStudio console to test 2023 data
+
+cat("=== Task 1: Testing 2023 Directory Data Availability ===\n\n")
+
+# Attempt to import 2023 directory data with error handling
+cat("Attempting to fetch 2023 directory data...\n")
+
+test_result <- tryCatch({
+  # Try to import 2023 directory data (minimal filters - just year)
+  dir_data_2023_test <- get_education_data(
+    level = "college-university",
+    source = "ipeds",
+    topic = "directory",
+    filters = list(year = 2023)
+  )
+
+  # If successful, display diagnostic information
+  cat(sprintf("✓ SUCCESS: Imported %d rows\n", nrow(dir_data_2023_test)))
+  cat(sprintf("✓ Columns: %d\n", ncol(dir_data_2023_test)))
+  cat("\n✓ Column names:\n")
+  print(names(dir_data_2023_test))
+
+  # Check for Florida records
+  florida_count <- sum(dir_data_2023_test$fips == 12, na.rm = TRUE)
+  cat(sprintf("\n✓ Florida institutions (fips == 12): %d\n", florida_count))
+
+  # Store for inspection
+  cat("\n✓ Data stored in 'dir_data_2023_test' for inspection\n")
+  cat("✓ Run: View(dir_data_2023_test) or head(dir_data_2023_test) to inspect\n")
+
+  list(success = TRUE, data = dir_data_2023_test)
+
+}, error = function(e) {
+  # If failed, display error information
+  cat("✗ FAILED: Could not import 2023 directory data\n\n")
+  cat("Error message:\n")
+  cat(paste0("  ", e$message, "\n\n"))
+
+  cat("Possible causes:\n")
+  cat("  1. educationdata package does not support 2023 data yet\n")
+  cat("  2. 2023 data not yet released in the API\n")
+  cat("  3. Package version is too old\n\n")
+
+  cat("Troubleshooting steps:\n")
+  cat("  - Update package: install.packages('educationdata')\n")
+  cat("  - Check package version: packageVersion('educationdata')\n")
+  cat("  - Visit: https://educationdata.urban.org/ to verify 2023 availability\n\n")
+
+  list(success = FALSE, error = e$message)
+})
+
+# Display result summary
+cat("\n=== Task 1 Result ===\n")
+if (test_result$success) {
+  cat("STATUS: ✓ 2023 directory data is AVAILABLE\n")
+  cat("NEXT STEP: Proceed to Task 2 (test completions-cip-6 data)\n")
+} else {
+  cat("STATUS: ✗ 2023 directory data is NOT AVAILABLE\n")
+  cat("NEXT STEP: Investigate error and determine alternative approach\n")
+}
+cat("\n")
+```
+
+---
+
+## TASK 2: Testing 2023 Completions-CIP-6 Data Availability
+
+Testing whether 2023 IPEDS completions-cip-6 data is available via the educationdata package.
+
+```{r test-2023-completions, eval=FALSE}
+# TASK 2 TEST CHUNK - Testing 2023 completions-cip-6 data availability
+# Instructions: Run this chunk interactively in RStudio console to test 2023 data
+
+cat("=== Task 2: Testing 2023 Completions-CIP-6 Data Availability ===\n\n")
+
+# Attempt to import 2023 completions data with error handling
+cat("Attempting to fetch 2023 completions-cip-6 data...\n")
+
+test_result_comp <- tryCatch({
+  # Try to import 2023 completions-cip-6 data (minimal filters - just year)
+  comp_data_2023_test <- get_education_data(
+    level = "college-university",
+    source = "ipeds",
+    topic = "completions-cip-6",
+    filters = list(year = 2023)
+  )
+
+  # If successful, display diagnostic information
+  cat(sprintf("✓ SUCCESS: Imported %d rows\n", nrow(comp_data_2023_test)))
+  cat(sprintf("✓ Columns: %d\n", ncol(comp_data_2023_test)))
+  cat("\n✓ Column names:\n")
+  print(names(comp_data_2023_test))
+
+  # Check for Florida records
+  florida_count <- sum(comp_data_2023_test$fips == 12, na.rm = TRUE)
+  cat(sprintf("\n✓ Florida completion records (fips == 12): %d\n", florida_count))
+
+  # Check for awards_6digit variable specifically
+  if ("awards_6digit" %in% names(comp_data_2023_test)) {
+    cat("✓ Variable 'awards_6digit' EXISTS in 2023 data\n")
+  } else {
+    cat("⚠ WARNING: Variable 'awards_6digit' NOT FOUND in 2023 data\n")
+    award_vars <- grep("award", names(comp_data_2023_test), value = TRUE, ignore.case = TRUE)
+    cat("  Similar variables found:\n")
+    print(award_vars)
+  }
+
+  # Store for inspection
+  cat("\n✓ Data stored in 'comp_data_2023_test' for inspection\n")
+  cat("✓ Run: View(comp_data_2023_test) or head(comp_data_2023_test) to inspect\n")
+
+  list(success = TRUE, data = comp_data_2023_test)
+
+}, error = function(e) {
+  # If failed, display error information
+  cat("✗ FAILED: Could not import 2023 completions-cip-6 data\n\n")
+  cat("Error message:\n")
+  cat(paste0("  ", e$message, "\n\n"))
+
+  cat("Possible causes:\n")
+  cat("  1. educationdata package does not support 2023 completions data\n")
+  cat("  2. 2023 completions data not yet released in the API\n")
+  cat("  3. Topic name has changed\n\n")
+
+  cat("Troubleshooting steps:\n")
+  cat("  - Verify directory data (Task 1) worked but completions doesn't\n")
+  cat("  - Check API documentation for endpoint changes\n")
+  cat("  - Try alternative approach with direct API calls\n\n")
+
+  list(success = FALSE, error = e$message)
+})
+
+# Display result summary
+cat("\n=== Task 2 Result ===\n")
+if (test_result_comp$success) {
+  cat("STATUS: ✓ 2023 completions-cip-6 data is AVAILABLE\n")
+  cat("NEXT STEP: Proceed to Task 3 (inspect directory schema)\n")
+} else {
+  cat("STATUS: ✗ 2023 completions-cip-6 data is NOT AVAILABLE\n")
+  cat("NEXT STEP: Check what year IS available for completions\n\n")
+
+  # Test what the most recent year is for completions
+  cat("=== Checking Most Recent Completions Year ===\n")
+  for (test_year in c(2022, 2021, 2020)) {
+    cat(sprintf("Testing year %d... ", test_year))
+    test_year_result <- tryCatch({
+      temp_data <- get_education_data(
+        level = "college-university",
+        source = "ipeds",
+        topic = "completions-cip-6",
+        filters = list(year = test_year, fips = 12)
+      )
+      cat(sprintf("✓ WORKS (%d FL records)\n", nrow(temp_data)))
+      TRUE
+    }, error = function(e) {
+      cat("✗ Not available\n")
+      FALSE
+    })
+    if (test_year_result) {
+      cat(sprintf("\n✓ Most recent completions year appears to be: %d\n", test_year))
+      break
+    }
+  }
+}
+cat("\n")
+```
+
+---
+
+```{r test-hd2023-schema, eval=FALSE, include=FALSE}
+# TASK 4 & 5 TEST CHUNKS - Schema inspection (completed)
+# Used to identify variable name mappings between API and .dta files
+# TASK 4 TEST CHUNK - Inspect HD2023.dta schema
+# Instructions: Run this chunk interactively in RStudio console
+
+cat("=== Task 4: Inspecting HD2023.dta Schema ===\n\n")
+
+# Load haven package for reading .dta files
+library(haven)
+
+# Load HD2023.dta file
+hd2023_path <- "/Users/racheldean/Documents/GitHub/IPEDtaS/data/HD2023.dta"
+
+cat(sprintf("Loading %s...\n", hd2023_path))
+hd2023 <- read_dta(hd2023_path)
+
+cat(sprintf("✓ Loaded successfully: %d rows x %d columns\n\n", nrow(hd2023), ncol(hd2023)))
+
+# Display all column names
+cat("=== All Variable Names ===\n")
+print(names(hd2023))
+
+# Search for Carnegie classification variables
+cat("\n=== Carnegie Classification Variables ===\n")
+cc_vars <- grep("^cc_basic|^c[0-9]+basic", names(hd2023), value = TRUE, ignore.case = TRUE)
+if(length(cc_vars) > 0) {
+  cat("Found Carnegie variables:\n")
+  print(cc_vars)
+} else {
+  cat("⚠ No Carnegie variables found with pattern 'cc_basic'\n")
+  cat("Searching for similar patterns...\n")
+  alt_vars <- grep("carnegie|basic|class", names(hd2023), value = TRUE, ignore.case = TRUE)
+  print(alt_vars)
+}
+
+# Check for required key variables
+cat("\n=== Key Variables Check ===\n")
+required_vars <- c("unitid", "fips", "sector", "control", "instnm", "inst_name")
+for(var in required_vars) {
+  if(var %in% names(hd2023)) {
+    cat(sprintf("✓ %s: EXISTS\n", var))
+  } else {
+    cat(sprintf("✗ %s: NOT FOUND\n", var))
+  }
+}
+
+# Check for institution name variable (might be instnm not inst_name)
+cat("\n=== Institution Name Variable ===\n")
+name_vars <- grep("name|instnm", names(hd2023), value = TRUE, ignore.case = TRUE)
+cat("Found name-related variables:\n")
+print(name_vars)
+
+# Filter for Florida records as a test
+cat("\n=== Florida Records Test ===\n")
+if("fips" %in% names(hd2023)) {
+  fl_count <- sum(hd2023$fips == 12, na.rm = TRUE)
+  cat(sprintf("Florida institutions (fips == 12): %d\n", fl_count))
+}
+
+# Show first few Florida records
+cat("\n=== Sample Florida Records ===\n")
+fl_sample <- hd2023 %>%
+  filter(fips == 12) %>%
+  select(any_of(c("unitid", "instnm", "fips", "sector", "control"))) %>%
+  head(5)
+print(fl_sample)
+
+cat("\n=== Task 4 Complete ===\n")
+cat("FINDINGS DOCUMENTED:\n")
+cat("1. Carnegie classification variable: c21basic (Carnegie 2021)\n")
+cat("2. Institution name variable: instnm (not inst_name)\n")
+cat("3. Variable mappings: inst_name → instnm, cc_basic_2021 → c21basic\n")
+cat("4. Florida institutions: 340\n")
+```
+
+---
+
+## TASK 5: Inspect C2023_a.dta Schema
+
+Inspecting the 2023 completions data file structure and variable names.
+
+```{r test-c2023-schema, eval=FALSE}
+# TASK 5 TEST CHUNK - Inspect C2023_a.dta schema
+# Instructions: Run this chunk interactively in RStudio console
+
+cat("=== Task 5: Inspecting C2023_a.dta Schema ===\n\n")
+
+# Load C2023_a.dta file
+c2023_path <- "/Users/racheldean/Documents/GitHub/IPEDtaS/data/C2023_a.dta"
+
+cat(sprintf("Loading %s...\n", c2023_path))
+c2023_a <- read_dta(c2023_path)
+
+cat(sprintf("✓ Loaded successfully: %d rows x %d columns\n\n", nrow(c2023_a), ncol(c2023_a)))
+
+# Display all column names
+cat("=== All Variable Names ===\n")
+print(names(c2023_a))
+
+# Search for key completions variables
+cat("\n=== Key Completions Variables Check ===\n")
+required_vars <- c("unitid", "cipcode", "cipcode_6digit", "awlevel", "award_level",
+                   "awards", "awards_6digit", "completions", "sex", "race", "majornum")
+for(var in required_vars) {
+  if(var %in% names(c2023_a)) {
+    cat(sprintf("✓ %s: EXISTS\n", var))
+  } else {
+    cat(sprintf("✗ %s: NOT FOUND\n", var))
+  }
+}
+
+# Search for award/completion count variables
+cat("\n=== Award/Completion Count Variables ===\n")
+award_vars <- grep("award|complet|ctotal", names(c2023_a), value = TRUE, ignore.case = TRUE)
+if(length(award_vars) > 0) {
+  cat("Found award-related variables:\n")
+  print(award_vars)
+} else {
+  cat("⚠ No award variables found\n")
+}
+
+# Filter for Florida records as a test
+cat("\n=== Florida Records Test ===\n")
+if("unitid" %in% names(c2023_a)) {
+  # Join with HD2023 to get fips
+  fl_unitids <- hd2023 %>% filter(fips == 12) %>% pull(unitid)
+  fl_comp_count <- sum(c2023_a$unitid %in% fl_unitids, na.rm = TRUE)
+  cat(sprintf("Florida completion records: %d\n", fl_comp_count))
+}
+
+# Show structure of first few records
+cat("\n=== Sample Records Structure ===\n")
+sample_records <- c2023_a %>%
+  head(5) %>%
+  select(1:10)  # First 10 columns
+print(sample_records)
+
+# Check demographic coding (sex and race)
+cat("\n=== Demographic Variable Values ===\n")
+if("sex" %in% names(c2023_a)) {
+  cat("Sex values (unique):\n")
+  print(unique(c2023_a$sex))
+}
+if("race" %in% names(c2023_a)) {
+  cat("\nRace values (unique):\n")
+  print(unique(c2023_a$race))
+}
+
+cat("\n=== Task 5 Complete ===\n")
+cat("DOCUMENT FINDINGS:\n")
+cat("1. Award count variable name: _______\n")
+cat("2. CIP code variable: _______\n")
+cat("3. Award level variable: _______\n")
+cat("4. Any variable name differences from educationdata API\n")
+```
+
+---
+
+## Data Import
+
+Importing and cleaning data from directory and program completions using 2023 IPEDS data.
+
+**Data Source**: 2023 IPEDS data files downloaded via [IPEDtaS](https://github.com/ttalVlatt/IPEDtaS) script, which automates downloading and labeling IPEDS data directly from NCES. The `educationdata` R package does not yet support 2023 completions data, so we use this alternative approach to access the most current data available.
+
+**Variable Mapping Notes**:
+- Directory data: `inst_name` → `instnm`, `cc_basic_2021` → `c21basic`, `inst_control` → `control`
+- Completions data: `award_level` → `awlevel`, `cipcode_6digit` → `cipcode`, `awards_6digit` → `ctotalt`
+- Demographics: Pre-aggregated in `.dta` files (`ctotalt` = total completers, equivalent to `sex==99, race==99` in API)
 
 ```{r}
-# Import directory dataset
-dir_data <- get_education_data(
-  level = "college-university",
-  source = "ipeds",
-  topic = "directory",
-  filters = list(year = 2022)
-)
+# Import directory dataset from HD2023.dta
+# Using IPEDtaS downloaded files instead of educationdata API
+# 2023 completions data not yet available in educationdata package
 
+dir_data <- read_dta("/Users/racheldean/Documents/GitHub/IPEDtaS/data/HD2023.dta")
 
-
+cat(sprintf("Loaded directory data: %d institutions\n", nrow(dir_data)))
 ```
 
 ```{r}
-# Import completions-cip-6 dataset
+# Import completions-cip-6 dataset from C2023_a.dta
+# Note: Demographics are pre-aggregated into columns (ctotalt, ctotalm, ctotalw, etc.)
 
-comp_data <- get_education_data(
-  level = "college-university",
-  source = "ipeds",
-  topic = "completions-cip-6",
-  filters = list(year = 2022)
-)
+comp_data <- read_dta("/Users/racheldean/Documents/GitHub/IPEDtaS/data/C2023_a.dta")
 
+cat(sprintf("Loaded completions data: %d records\n", nrow(comp_data)))
 ```
 
 Cleaning data:
@@ -53,26 +390,33 @@ Cleaning data:
 # directory
 
 # Select and filter variables
+# Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
 clean_dir <- dir_data %>%
-  select(unitid, year, opeid, fips, sector, inst_control, cc_basic_2021, inst_name) %>%
-  filter(fips == 12, opeid != "-2", inst_control == 1, ((cc_basic_2021 >= 1 & cc_basic_2021 <= 8) | cc_basic_2021 == 14 | cc_basic_2021 == 23) & cc_basic_2021 > 0, !is.na(inst_name))
+  select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
+  filter(fips == 12, opeid != "-2", control == 1, ((c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23) & c21basic > 0, !is.na(instnm))
 #keeps FL, public institutions, removes NAs from institutions
 
+cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_dir)))
 ```
 
 ```{r}
 #CIP
 
 # Select and filter variables
-#fips: 12 is Florida 
-#award_level: 1, 2, 3, 30, 31, 32, 33 = certificates
-#award_level: 4 = associate degrees
-#awards_6digit: above 0 = completer
-#cipcode_6digit: above 0 = specific program name, removing 99 (it appears to include all programs/ miscellaneous category)
+# Variable name updates for .dta files: award_level → awlevel, cipcode_6digit → cipcode, awards_6digit → ctotalt
+# Note: Demographics pre-aggregated in .dta files - using ctotalt (total completers, all demographics)
+# This is equivalent to filtering sex == 99, race == 99 in the API data
+
+#awlevel: 32 = certificates (keeping only level 32)
+#awlevel: 4 = associate degrees
+#ctotalt: total completers (equivalent to sex==99, race==99 from API)
+#cipcode: CIP code for program, removing 99 (miscellaneous category)
 
 clean_comp <- comp_data %>%
-  select(unitid, sex, race, cipcode_6digit, award_level, awards_6digit, fips, year) %>%
-  filter(fips == 12, sex == 99, race == 99, cipcode_6digit > 0, cipcode_6digit != 99, award_level %in% c(4, 32), awards_6digit > 0) 
+  select(unitid, cipcode, awlevel, ctotalt) %>%
+  filter(cipcode > 0, cipcode != 99, awlevel %in% c(4, 32), ctotalt > 0)
+
+cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 ```
 
 
@@ -81,10 +425,14 @@ clean_comp <- comp_data %>%
 Merging Directory and CIPcode and getting top five certificate and associate programs at each FL community college
 ```{r}
 #merging dataframes
+# Note: Joining only on unitid since .dta files don't have year/fips in completions data the same way
 
-merged_data <- left_join(clean_dir, clean_comp, by = c("unitid", "year", "fips")) %>% 
-  group_by(opeid, award_level) %>% 
-  slice_max(order_by = awards_6digit, n = 5, with_ties = TRUE)
+merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
+  group_by(opeid, awlevel) %>%
+  slice_max(order_by = ctotalt, n = 5, with_ties = TRUE)
+
+cat(sprintf("Merged data: %d top program records\n", nrow(merged_data)))
+cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
   
   
 

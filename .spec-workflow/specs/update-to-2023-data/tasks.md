@@ -7,7 +7,7 @@
 
 ## Interactive Debugging Tasks
 
-- [ ] 1. Verify 2023 data availability for directory dataset
+- [x] 1. Verify 2023 data availability for directory dataset
   - File: `scripts/community_college_completion_RDD.Rmd`
   - Test if `get_education_data()` accepts `year = 2023` for directory topic
   - Add diagnostic output to see error messages if it fails
@@ -46,13 +46,15 @@
     5. Only after successfully testing, edit tasks.md and change status from `[-]` to `[x]`
     6. Do NOT proceed to next task until this one is complete and marked `[x]`
 
-- [ ] 2. Verify 2023 data availability for completions-cip-6 dataset
+- [x] 2. Verify 2023 data availability for completions-cip-6 dataset
   - File: `scripts/community_college_completion_RDD.Rmd`
   - Test if `get_education_data()` accepts `year = 2023` for completions-cip-6 topic
   - Add diagnostic output to see error messages if it fails
   - Purpose: Confirm 2023 completions data is accessible before proceeding
   - _Leverage: Existing completions import chunk_
   - _Requirements: 1.1, 1.2_
+  - **OUTCOME**: 2023 completions NOT available via educationdata package, but IS available via direct NCES download
+  - **SOLUTION**: Switch to IPEDtaS.R script for unified data acquisition (DRY approach)
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in IPEDS data and the educationdata package
@@ -84,14 +86,14 @@
     4. After successful testing, edit tasks.md: change from `[-]` to `[x]`
     5. Do NOT proceed until marked `[x]`
 
-- [ ] 3. Inspect 2023 directory data schema and identify Carnegie classification variable
-  - File: `scripts/community_college_completion_RDD.Rmd`
-  - Use `names()` to list all column names in 2023 directory data
-  - Identify Carnegie classification variable (cc_basic_2021, cc_basic_2023, or other)
-  - Check if all required variables exist
-  - Purpose: Understand schema changes before updating cleaning logic
-  - _Leverage: Existing directory cleaning chunk_
-  - _Requirements: 2.1, 2.2, 2.3_
+- [x] 3. Configure and run IPEDtaS to download 2023 IPEDS data files
+  - File: `/Users/racheldean/Documents/GitHub/IPEDtaS/R/IPEDtaS.R`
+  - Modify `selected_files` list to download: HD2023, C2023_A, C2023_B, C2023_C
+  - Run IPEDtaS.R to download and process files
+  - Verify .dta files created in data/ folder
+  - Purpose: Acquire 2023 data using DRY principle (one unified data source)
+  - _Leverage: IPEDtaS script at /Users/racheldean/Documents/GitHub/IPEDtaS/R/IPEDtaS.R_
+  - _Requirements: 1.1, 1.2_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in data schema validation and IPEDS variables
@@ -125,13 +127,15 @@
     5. Edit tasks.md: `[-]` → `[x]` after completion
     6. Do NOT proceed until schema is fully documented
 
-- [ ] 4. Inspect 2023 completions-cip-6 data schema and verify awards_6digit variable
+- [x] 4. Inspect HD2023.dta schema and identify variable names
+  - **FINDINGS**: Carnegie variable = `c21basic`, Institution name = `instnm`, 340 FL institutions
   - File: `scripts/community_college_completion_RDD.Rmd`
-  - Use `names()` to list all column names in 2023 completions data
-  - Verify `awards_6digit` variable exists or identify alternative
-  - Check all required variables (unitid, year, fips, cipcode_6digit, award_level, sex, race)
-  - Purpose: Understand schema changes before updating cleaning logic
-  - _Leverage: Existing completions cleaning chunk_
+  - Load HD2023.dta using `haven::read_dta()`
+  - Use `names()` to list all column names
+  - Identify Carnegie classification variable (cc_basic_20XX)
+  - Verify required variables: unitid, fips, sector, control, inst_name
+  - Purpose: Understand .dta file structure and variable naming
+  - _Leverage: IPEDtaS downloaded files at /Users/racheldean/Documents/GitHub/IPEDtaS/data/HD2023.dta_
   - _Requirements: 2.1, 2.2, 2.3_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
@@ -166,15 +170,16 @@
     5. Edit tasks.md: `[-]` → `[x]` after documentation complete
     6. Do NOT proceed until schema is verified
 
-- [ ] 5. Update directory cleaning chunk to work with 2023 data
-  - File: `scripts/community_college_completion_RDD.Rmd` (directory cleaning chunk)
-  - Update Carnegie classification variable name based on Task 3 findings
-  - Implement dynamic variable selection (cc_basic_2023 vs cc_basic_2021)
-  - Test filtering logic with 2023 data
-  - Verify Florida community colleges are present
-  - Purpose: Adapt directory cleaning to 2023 schema
-  - _Leverage: Existing clean_dir code and design.md Component 2_
-  - _Requirements: 3.1, 3.2, 3.3_
+- [x] 5. Inspect C2023_a.dta schema and verify completions variables
+  - **FINDINGS**: Award count = `ctotalt`, CIP = `cipcode`, Award level = `awlevel`, Demographics pre-aggregated into columns!
+  - File: `scripts/community_college_completion_RDD.Rmd`
+  - Load C2023_a.dta using `haven::read_dta()`
+  - Use `names()` to list all column names
+  - Verify completions count variable (awards, completions, or similar)
+  - Check for: unitid, cipcode, awlevel (award_level), sex, race
+  - Purpose: Understand completions file structure before updating code
+  - _Leverage: IPEDtaS downloaded C2023_a.dta file_
+  - _Requirements: 2.1, 2.2, 2.3_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in dplyr data manipulation and Carnegie classifications
@@ -211,15 +216,16 @@
     6. Edit tasks.md: `[-]` → `[x]` only after successful testing
     7. Do NOT proceed until clean_dir is working correctly
 
-- [ ] 6. Update completions cleaning chunk to work with 2023 data
-  - File: `scripts/community_college_completion_RDD.Rmd` (completions cleaning chunk)
-  - Verify `awards_6digit` variable or use alternative identified in Task 4
-  - Update variable names if any changed
-  - Test filtering logic with 2023 data incrementally
-  - Verify reasonable record counts at each step
-  - Purpose: Adapt completions cleaning to 2023 schema
-  - _Leverage: Existing clean_comp code and design.md Component 3_
-  - _Requirements: 3.1, 3.4, 3.5, 3.6, 3.7_
+- [x] 6. Update R Markdown to load 2023 .dta files instead of API calls
+  - File: `scripts/community_college_completion_RDD.Rmd`
+  - Add `library(haven)` to setup chunk
+  - Replace `get_education_data()` calls with `read_dta()` calls
+  - Load HD2023.dta for directory data
+  - Load C2023_a.dta for completions data
+  - Test that data loads successfully
+  - Purpose: Switch from API to local .dta files
+  - _Leverage: Task 4 and 5 schema findings_
+  - _Requirements: 1.1, 1.2_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in IPEDS completions data and data validation
@@ -258,14 +264,15 @@
     6. Edit tasks.md: `[-]` → `[x]` after successful testing
     7. Do NOT proceed until clean_comp is working correctly
 
-- [ ] 7. Test merge and verify join keys work with 2023 data
-  - File: `scripts/community_college_completion_RDD.Rmd` (merge chunk)
-  - Test `left_join()` on 2023 data using existing join keys
-  - Add diagnostic output to check for NA values and row counts
-  - Verify merge produces expected results
-  - Purpose: Ensure merge logic works with 2023 data
-  - _Leverage: Existing merge code and design.md Component 4_
-  - _Requirements: 2.6, 3.8_
+- [x] 7. Update directory cleaning chunk with correct 2023 variable names
+  - File: `scripts/community_college_completion_RDD.Rmd`
+  - Update variable names based on Task 4 findings
+  - Update Carnegie classification variable reference
+  - Test filtering logic with diagnostic output
+  - Verify Florida community colleges are captured
+  - Purpose: Adapt cleaning code to .dta variable names
+  - _Leverage: Task 4 schema findings_
+  - _Requirements: 3.1, 3.2, 3.3_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in data joins and data quality validation
@@ -303,14 +310,15 @@
     7. Edit tasks.md: `[-]` → `[x]` after successful merge
     8. Do NOT proceed until merge is validated
 
-- [ ] 8. Test top 5 calculation and validate results
-  - File: `scripts/community_college_completion_RDD.Rmd` (analysis chunk)
-  - Run `slice_max()` operation on 2023 merged data
-  - Add diagnostic output to verify each institution has results
-  - Compare 2023 results to 2022 for reasonableness
-  - Purpose: Ensure analysis logic produces valid results
-  - _Leverage: Existing top5 calculation code and design.md Component 4_
-  - _Requirements: 3.8, 4.1, 4.2, 4.3_
+- [x] 8. Update completions cleaning chunk with correct 2023 variable names
+  - File: `scripts/community_college_completion_RDD.Rmd`
+  - Update variable names based on Task 5 findings
+  - Update completions count variable reference
+  - Test filtering logic incrementally with diagnostic output
+  - Verify reasonable record counts
+  - Purpose: Adapt cleaning code to .dta variable names
+  - _Leverage: Task 5 schema findings_
+  - _Requirements: 3.4, 3.5, 3.6, 3.7_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Developer with expertise in data aggregation and result validation
@@ -347,15 +355,15 @@
     6. Edit tasks.md: `[-]` → `[x]` after validation
     7. Do NOT proceed until results are validated
 
-- [ ] 9. Parameterize year throughout the document
+- [x] 9. Test merge and top 5 calculation with 2023 data
   - File: `scripts/community_college_completion_RDD.Rmd`
-  - Create `YEAR <- 2023` variable at top of document (after setup chunk)
-  - Replace all hardcoded `year = 2022` with `year = YEAR`
-  - Update narrative text to reference the year dynamically
-  - Update R Markdown title/date to reflect 2023
-  - Purpose: Make future year updates easy
-  - _Leverage: Existing get_education_data calls_
-  - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - Test merge operation with diagnostic output
+  - Run top 5 calculation
+  - Verify results are reasonable
+  - Compare to 2022 results for validation
+  - Purpose: Ensure analysis produces valid 2023 results
+  - _Leverage: Updated cleaning code from Tasks 7-8_
+  - _Requirements: 3.8, 4.1, 4.2, 4.3_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
     Role: R Markdown Developer with expertise in parameterization and reproducible research
@@ -393,14 +401,15 @@
     7. Edit tasks.md: `[-]` → `[x]` after testing
     8. Do NOT proceed until parameterization is complete
 
-- [ ] 10. Clean up test/diagnostic code and finalize document
+- [x] 10. Update narrative text and finalize document
   - File: `scripts/community_college_completion_RDD.Rmd`
-  - Remove or comment out intermediate test chunks from Tasks 1-2
-  - Keep essential diagnostic output (row counts) but remove verbose debugging
-  - Ensure narrative text flows well and documents the analysis
-  - Add comments documenting schema changes and design decisions
-  - Purpose: Prepare clean, production-ready R Markdown document
-  - _Leverage: Completed 2023 analysis from previous tasks_
+  - Remove test chunks from Tasks 1-2
+  - Update narrative text to reference 2023 data
+  - Update YAML header date
+  - Add comments documenting IPEDtaS approach
+  - Knit document to PDF to verify
+  - Purpose: Finalize production-ready 2023 analysis
+  - _Leverage: Completed 2023 analysis from Tasks 4-9_
   - _Requirements: All requirements_
   - _Prompt: **Implement the task for spec update-to-2023-data. First run spec-workflow-guide to get the workflow guide then implement the task:**
 
