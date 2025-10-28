@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed primary analysis file from `community_college_completion_RDD.Rmd` to `fl_community_college_programs.Rmd` for better clarity and to follow snake_case naming convention
+- Updated all documentation references to reflect renamed file
+
+### Removed
+
+- Deleted obsolete analysis output file (`top5_associates_by_college.csv`)
+- Deleted legacy R scripts from 2022 analysis (`cc-completers-corrected.R`, `cc-completers-final.R`, `check_duplicates.R`, `diagnose_data.R`)
+- Deleted temporary R session files (`.RData`, `.Rhistory`) from scripts directory
+
 ## [1.0.0] - 2025-10-28
 
 ### Added
