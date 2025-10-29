@@ -82,19 +82,24 @@ Both files perform the same analysis:
 - Filter for Florida public community colleges
 - Filter for certificate (awlevel=2) and associate degree (awlevel=3) programs
 - Identify the top 5 programs by completion count at each institution
-- Generate output showing top programs across all FL community colleges
+- Create `merged_data` object with top programs across all FL community colleges
 
-## Output
+### Output Differences
 
-The analysis generates a dataset of the top certificate and associate degree programs at each Florida community college, showing:
+- **R Markdown**: Generates formatted reports and can export results to CSV if needed
+- **R Script**: Creates the `merged_data` object in your R environment for programmatic use (does not write CSV output). After running the script, you can directly inspect or manipulate the data:
+  ```r
+  View(merged_data)          # View the results
+  summary(merged_data)       # Summarize the data
+  # Use merged_data for further analysis
+  ```
 
+The `merged_data` object contains:
 - Institution identifiers (unitid, opeid)
 - Institution names
 - CIP codes for programs
 - Award levels (2=certificates, 3=associate degrees)
 - Total completion counts
-
-Output is saved to: `data/top5_associates_by_college.csv`
 
 ## Project Structure
 
