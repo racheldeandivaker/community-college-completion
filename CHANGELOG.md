@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deleted legacy R scripts from 2022 analysis (`cc-completers-corrected.R`, `cc-completers-final.R`, `check_duplicates.R`, `diagnose_data.R`)
 - Deleted temporary R session files (`.RData`, `.Rhistory`) from scripts directory
 
-## [0.1.0] - 2025-10-14
+## [0.0.01] - 2025-10-14
 
 ### Added
 
@@ -63,5 +63,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved filtering to exclude CIP code 99 (miscellaneous category)
 
 [unreleased]: https://github.com/community-college-completion/compare/v0.0.1...HEAD
-[0.0.1]: https://github.com/community-college-completion/compare/v0.1.0...v0.0.1
-[0.1.0]: https://github.com/community-college-completion/releases/tag/v0.1.0
+[0.0.1]: https://github.com/community-college-completion/compare/v0.0.01...v0.0.1
+[0.0.01]: https://github.com/community-college-completion/releases/tag/v0.0.01
