@@ -38,15 +38,21 @@ The analysis requires the following R packages:
 
 - `dplyr` - Data manipulation
 - `haven` - Reading Stata .dta files
+- `here` - Project-root-aware file paths
 
 Install packages in R:
 
 ```r
 install.packages('dplyr')
 install.packages('haven')
+install.packages('here')
 ```
 
 ## Running the Analysis
+
+You can run the analysis using either the R Markdown document (for reports) or the standalone R script (for programmatic use):
+
+### Option 1: R Markdown (Recommended for Reports)
 
 1. Open the R Markdown script in RStudio:
    ```
@@ -55,24 +61,45 @@ install.packages('haven')
 
 2. Run all chunks to execute the analysis
 
-3. The script will:
-   - Load the 2023 IPEDS data files from `data/`
-   - Filter for Florida public community colleges
-   - Filter for certificate (awlevel=2) and associate degree (awlevel=3) programs
-   - Identify the top 5 programs by completion count at each institution
-   - Generate output showing top programs across all FL community colleges
+### Option 2: R Script (Recommended for Programmatic Use)
 
-## Output
+1. Run the R script from the R console (from any directory within the project):
+   ```r
+   source("scripts/fl_community_college_programs.R")
+   ```
 
-The analysis generates a dataset of the top certificate and associate degree programs at each Florida community college, showing:
+2. Alternatively, run from the command line:
+   ```bash
+   Rscript scripts/fl_community_college_programs.R
+   ```
 
+   Note: The script uses the `here` package to automatically find the project root, so it works regardless of your current working directory.
+
+### Analysis Steps
+
+Both files perform the same analysis:
+- Load the 2023 IPEDS data files from `data/`
+- Filter for Florida public community colleges
+- Filter for certificate (awlevel=2) and associate degree (awlevel=3) programs
+- Identify the top 5 programs by completion count at each institution
+- Create `merged_data` object with top programs across all FL community colleges
+
+### Output Differences
+
+- **R Markdown**: Generates formatted reports and can export results to CSV if needed
+- **R Script**: Creates the `merged_data` object in your R environment for programmatic use (does not write CSV output). After running the script, you can directly inspect or manipulate the data:
+  ```r
+  View(merged_data)          # View the results
+  summary(merged_data)       # Summarize the data
+  # Use merged_data for further analysis
+  ```
+
+The `merged_data` object contains:
 - Institution identifiers (unitid, opeid)
 - Institution names
 - CIP codes for programs
 - Award levels (2=certificates, 3=associate degrees)
 - Total completion counts
-
-Output is saved to: `data/top5_associates_by_college.csv`
 
 ## Project Structure
 
@@ -82,7 +109,8 @@ community-college-completion/
 │   ├── HD2023.dta                 # IPEDS directory data
 │   └── C2023_a.dta                # IPEDS completions data
 ├── scripts/                       # R scripts and R Markdown files
-│   └── fl_community_college_programs.Rmd  # Main analysis
+│   ├── fl_community_college_programs.Rmd  # Main analysis (R Markdown)
+│   └── fl_community_college_programs.R    # Main analysis (R script)
 └── README.md                      # This file
 ```
 
@@ -91,6 +119,17 @@ community-college-completion/
 - **Award Level Coding**: The 2023 IPEDS .dta files use `awlevel=2` for certificates and `awlevel=3` for associate degrees (different from prior years' coding)
 - **Demographics**: The .dta files contain pre-aggregated demographic totals (ctotalt = total completers across all demographics)
 - **Data Currency**: This analysis uses the most recent IPEDS data available (2023)
+
+## Contributing
+
+The `main` branch is protected to maintain code stability and ensure all changes are reviewed. To contribute:
+
+1. Create a new branch: `git checkout -b feature/your-feature-name`
+2. Make your changes and test thoroughly
+3. Push your branch: `git push origin feature/your-feature-name`
+4. Submit a pull request for review
+
+Please follow existing code style, test with the included data files, and update CHANGELOG.md with your changes.
 
 ## Citation
 

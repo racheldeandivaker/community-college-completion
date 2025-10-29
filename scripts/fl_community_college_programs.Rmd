@@ -17,10 +17,12 @@ Install packages and load libraries
 
 library(dplyr)
 library(haven)  # For reading .dta files from IPEDtaS
+library(here)   # For project-root-aware file paths
 
-# Set up data paths (relative to this script's location)
+# Set up data paths (relative to project root)
+# The here package automatically finds the project root directory
 # Data files are stored in the project's data/ directory
-DATA_PATH <- "../data"
+DATA_PATH <- here("data")
 ```
 
 ## Data Import
@@ -60,8 +62,14 @@ Cleaning data:
 # Variable name updates for .dta files: inst_name → instnm, cc_basic_2021 → c21basic, inst_control → control
 clean_dir <- dir_data %>%
   select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
-  filter(fips == 12, opeid != "-2", control == 1, ((c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23) & c21basic > 0, !is.na(instnm))
-#keeps FL, public institutions, removes NAs from institutions
+  filter(
+    fips == 12,              # Florida only
+    !is.na(opeid),           # Remove missing OPEID
+    opeid != "-2",           # Valid OPEID (exclude -2)
+    control == 1,            # Public institutions only
+    (c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23,  # Community college Carnegie classifications
+    !is.na(instnm)          # Remove missing institution names
+  )
 
 cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_dir)))
 ```
@@ -81,8 +89,15 @@ cat(sprintf("Filtered directory: %d Florida community colleges\n", nrow(clean_di
 
 clean_comp <- comp_data %>%
   select(unitid, cipcode, awlevel, ctotalt) %>%
-  filter(!is.na(cipcode), !is.na(awlevel), !is.na(ctotalt),
-         cipcode > 0, cipcode != 99, awlevel %in% c(2, 3), ctotalt > 0)
+  filter(
+    !is.na(cipcode),         # Remove missing CIP codes
+    !is.na(awlevel),         # Remove missing award levels
+    !is.na(ctotalt),         # Remove missing completion counts
+    cipcode > 0,             # Valid CIP codes only
+    cipcode != 99,           # Exclude miscellaneous category
+    awlevel %in% c(2, 3),    # Certificates (2) and associate degrees (3) only
+    ctotalt > 0              # Programs with completions only
+  )
 
 cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 ```
@@ -94,15 +109,13 @@ Merging Directory and CIPcode and getting top five certificate and associate pro
 # Note: Joining only on unitid since .dta files don't have year/fips in completions data the same way
 
 merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
+  filter(!is.na(awlevel), !is.na(ctotalt), !is.na(cipcode)) %>%  # Remove rows with missing completion data
   group_by(opeid, awlevel) %>%
   slice_max(order_by = ctotalt, n = 5, with_ties = TRUE)
 
 cat(sprintf("Merged data: %d top programs\n", nrow(merged_data)))
 cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
   
-  
-
-
 
 
 ```
