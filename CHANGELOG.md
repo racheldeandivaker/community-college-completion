@@ -7,23 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Created standalone R script version (`fl_community_college_programs.R`) for programmatic use
-- Added documentation for both R Markdown and R script execution options
-
-### Changed
-
-- Renamed primary analysis file from `community_college_completion_RDD.Rmd` to `fl_community_college_programs.Rmd` for better clarity and to follow snake_case naming convention
-- Updated all documentation references to reflect renamed file and new R script option
-
-### Removed
-
-- Deleted obsolete analysis output file (`top5_associates_by_college.csv`)
-- Deleted legacy R scripts from 2022 analysis (`cc-completers-corrected.R`, `cc-completers-final.R`, `check_duplicates.R`, `diagnose_data.R`)
-- Deleted temporary R session files (`.RData`, `.Rhistory`) from scripts directory
-
-## [1.0.0] - 2025-10-28
+## [0.0.1] - 2025-10-29
 
 ### Added
 
@@ -32,10 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive README.md with installation instructions, requirements, and usage guide
 - Citation information for IPEDtaS tool in README
 - R Markdown script for analyzing top certificate and associate degree programs
+- Standalone R script version (`fl_community_college_programs.R`) for programmatic use
+- Documentation for both R Markdown and R script execution options
+- `here` package for project-root-aware file paths
 - Data filtering for Florida public community colleges
 - Support for 2023 IPEDS award level coding (awlevel=2 for certificates, awlevel=3 for associate degrees)
-- NA filtering for cipcode, awlevel, and ctotalt variables
+- NA filtering for cipcode, awlevel, ctotalt, opeid, and instnm variables
 - Analysis to identify top 5 programs by completion count at each institution
+- Filter to remove rows with missing completion data after join operation
 
 ### Changed
 
@@ -43,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrated from educationdata API to IPEDtaS-downloaded .dta files for 2023 data access
 - Changed data path from external IPEDtaS repository to local project data directory
 - Updated award level filtering to use 2023 coding scheme (2 and 3 instead of 32 and 4)
+- Renamed primary analysis file from `community_college_completion_RDD.Rmd` to `fl_community_college_programs.Rmd` for better clarity and to follow snake_case naming convention
+- Improved code readability with multi-line filter statements and inline comments
+- Updated all documentation references to reflect renamed file and new R script option
 - Simplified project structure for better reproducibility
 
 ### Removed
@@ -51,6 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hardcoded user-specific file paths
 - Test/debugging code chunks from R Markdown script
 - Spec workflow files from version control
+- Deleted obsolete analysis output file (`top5_associates_by_college.csv`)
+- Deleted legacy R scripts from 2022 analysis (`cc-completers-corrected.R`, `cc-completers-final.R`, `check_duplicates.R`, `diagnose_data.R`)
+- Deleted temporary R session files (`.RData`, `.Rhistory`) from scripts directory
 
 ## [0.1.0] - 2025-10-14
 
@@ -68,6 +62,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refined data cleaning logic for program-level analysis
 - Improved filtering to exclude CIP code 99 (miscellaneous category)
 
-[unreleased]: https://github.com/community-college-completion/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/community-college-completion/compare/v0.1.0...v1.0.0
+[unreleased]: https://github.com/community-college-completion/compare/v0.0.1...HEAD
+[0.0.1]: https://github.com/community-college-completion/compare/v0.1.0...v0.0.1
 [0.1.0]: https://github.com/community-college-completion/releases/tag/v0.1.0

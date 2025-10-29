@@ -38,12 +38,14 @@ The analysis requires the following R packages:
 
 - `dplyr` - Data manipulation
 - `haven` - Reading Stata .dta files
+- `here` - Project-root-aware file paths
 
 Install packages in R:
 
 ```r
 install.packages('dplyr')
 install.packages('haven')
+install.packages('here')
 ```
 
 ## Running the Analysis
@@ -61,17 +63,17 @@ You can run the analysis using either the R Markdown document (for reports) or t
 
 ### Option 2: R Script (Recommended for Programmatic Use)
 
-1. Run the R script from the R console (from the scripts directory):
+1. Run the R script from the R console (from any directory within the project):
    ```r
-   setwd("scripts")
-   source("fl_community_college_programs.R")
+   source("scripts/fl_community_college_programs.R")
    ```
 
-2. Alternatively, run from the command line (from the scripts directory):
+2. Alternatively, run from the command line:
    ```bash
-   cd scripts
-   Rscript fl_community_college_programs.R
+   Rscript scripts/fl_community_college_programs.R
    ```
+
+   Note: The script uses the `here` package to automatically find the project root, so it works regardless of your current working directory.
 
 ### Analysis Steps
 
@@ -112,6 +114,17 @@ community-college-completion/
 - **Award Level Coding**: The 2023 IPEDS .dta files use `awlevel=2` for certificates and `awlevel=3` for associate degrees (different from prior years' coding)
 - **Demographics**: The .dta files contain pre-aggregated demographic totals (ctotalt = total completers across all demographics)
 - **Data Currency**: This analysis uses the most recent IPEDS data available (2023)
+
+## Contributing
+
+The `main` branch is protected to maintain code stability and ensure all changes are reviewed. To contribute:
+
+1. Create a new branch: `git checkout -b feature/your-feature-name`
+2. Make your changes and test thoroughly
+3. Push your branch: `git push origin feature/your-feature-name`
+4. Submit a pull request for review
+
+Please follow existing code style, test with the included data files, and update CHANGELOG.md with your changes.
 
 ## Citation
 

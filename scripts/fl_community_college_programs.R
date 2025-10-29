@@ -21,12 +21,14 @@
 # ============================================================================
 
 # Load required libraries
-library(dplyr)  
+library(dplyr)
 library(haven)
+library(here)    # For project-root-aware file paths
 
-# Set up data paths (relative to this script's location)
+# Set up data paths (relative to project root)
+# The here package automatically finds the project root directory
 # Data files are stored in the project's data/ directory
-DATA_PATH <- "../data"
+DATA_PATH <- here("data")
 
 # ============================================================================
 # Data Import
@@ -66,7 +68,8 @@ clean_dir <- dir_data %>%
   select(unitid, opeid, fips, sector, control, c21basic, instnm) %>%
   filter(
     fips == 12,              # Florida only
-    opeid != "-2",           # Valid OPEID
+    !is.na(opeid),           # Remove missing OPEID
+    opeid != "-2",           # Valid OPEID (exclude -2)
     control == 1,            # Public institutions only
     (c21basic >= 1 & c21basic <= 8) | c21basic == 14 | c21basic == 23,  # Community college Carnegie classifications
     !is.na(instnm)          # Remove missing institution names
@@ -106,6 +109,7 @@ cat(sprintf("Filtered completions: %d program records\n", nrow(clean_comp)))
 # associate programs at each FL community college
 
 merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
+  filter(!is.na(awlevel), !is.na(ctotalt), !is.na(cipcode)) %>%  # Remove rows with missing completion data
   group_by(opeid, awlevel) %>%
   slice_max(order_by = ctotalt, n = 5, with_ties = TRUE)
 
