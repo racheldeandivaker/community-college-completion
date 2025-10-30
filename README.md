@@ -10,8 +10,8 @@ This project identifies the top 5 certificate and associate degree programs at e
 
 The analysis uses 2023 IPEDS data files included in the project:
 
-- **HD2023.dta** (17.8 MB): Directory/institutional data with institution identifiers, location, control, sector, and Carnegie classifications
-- **C2023_a.dta** (91.1 MB): Completions data by CIP code with award levels and completion counts
+- **HD2023.dta**: Directory/institutional data with institution identifiers, location, control, sector, and Carnegie classifications
+- **C2023_a.dta**: Completions data by CIP code with award levels and completion counts
 
 These files were originally obtained via [IPEDtaS](https://github.com/ttalVlatt/IPEDtaS), an automated tool that downloads IPEDS complete data files directly from NCES and applies variable labels. The `educationdata` R package does not yet support 2023 completions data, making this approach necessary for accessing current data.
 
@@ -19,7 +19,7 @@ These files were originally obtained via [IPEDtaS](https://github.com/ttalVlatt/
 
 ### Git LFS
 
-This repository uses [Git Large File Storage (LFS)](https://git-lfs.github.com/) to manage the large .dta data files (~109 MB total). You must have Git LFS installed before cloning:
+This repository uses [Git Large File Storage (LFS)](https://git-lfs.github.com/) to manage the large .dta data files. You must have Git LFS installed before cloning:
 
 ```bash
 # Install Git LFS (macOS)
@@ -125,7 +125,7 @@ community-college-completion/
 The `main` branch is protected to maintain code stability and ensure all changes are reviewed. To contribute:
 
 1. Create a new branch: `git checkout -b feature/your-feature-name`
-2. Make your changes and test thoroughly
+2. Make your changes
 3. Push your branch: `git push origin feature/your-feature-name`
 4. Submit a pull request for review
 
