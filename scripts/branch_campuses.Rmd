@@ -1,0 +1,103 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+
+```{r }
+rm(list = ls())
+
+library(tidyverse)
+library(readr)
+library(leaflet)
+library(tigris)
+library(tidycensus)
+library(sf)
+library(ggplot2)
+
+setwd("~/GitHub/community-college-completion")
+
+
+library(here)   # For project-root-aware file paths
+
+# Set up data paths (relative to project root)
+# The here package automatically finds the project root directory
+# Data files are stored in the project's data/ directory
+DATA_PATH <- here("data")
+
+
+```
+
+```{r import data}
+
+
+programs <- read_csv(file.path(DATA_PATH, "fl_cc_programs.csv"))
+
+campuses <- read.csv("~/GitHub/community-college-completion/data/SSTAR_data_1762372261914.csv") %>% 
+  filter(stabbr == "FL" &
+         control == "Public") %>% 
+  select(-c(control, lastyear_ipeds, addr, city, fips, instnm, opeid, unitid_orig)) 
+
+
+
+```
+
+
+```{r Merge datasets- keep branch campuses}
+
+branch_campuses <- programs %>% 
+  select(unitid) %>%
+  distinct() %>% 
+  left_join(campuses,
+            by = "unitid") %>% 
+  filter(g_location == "Branch Campus") #filter to keep only branch campuses
+  
+
+```
+
+
+```{r Identify rural branch campuses}
+
+urban <- urban_areas(cb = FALSE, year = 2020) |>
+  mutate(states = str_extract(NAME10, ",(.*)")) |>
+  filter(states == ", FL" &
+           UATYP10 != "R") #remove urban clusters, keep urban areas
+
+branch_sf <- branch_campuses %>% 
+  st_as_sf(coords = c("lng", "lat"), crs = 4269)
+
+rural_branch_campuses <- st_filter(x = branch_sf, st_union(urban), .predicate = st_disjoint)
+
+
+
+florida <- states(cb=TRUE) %>% 
+  filter(NAME == "Florida") %>% 
+  st_transform(crs = 3087)
+  
+
+
+ggplot() +
+  geom_sf(data = florida, aes(), alpha = 0) +
+  geom_sf(data = rural_branch_campuses) +
+  theme_void()
+
+
+leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(data = rural_branch_campuses,
+             popup = paste(rural_branch_campuses$parent_instnm, "<br>",
+                           rural_branch_campuses$address))
+               
+   
+
+
+```
+
+```{r Save sample}
+
+write_csv(rural_branch_campuses, file = file.path(DATA_PATH, "branch_campus_list.csv"))
+
+```
+

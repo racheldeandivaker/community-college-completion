@@ -120,4 +120,9 @@ cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
 
 ```
 
+```{r save data}
+
+write_csv(merged_data, file = file.path(DATA_PATH, "fl_cc_programs.csv"))
+
+```
 
