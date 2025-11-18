@@ -23,6 +23,7 @@
 # Load required libraries
 library(dplyr)
 library(haven)
+library(readr)   # For writing CSV files
 library(here)    # For project-root-aware file paths
 
 # Set up data paths (relative to project root)
@@ -115,5 +116,14 @@ merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
 
 cat(sprintf("Merged data: %d top programs\n", nrow(merged_data)))
 cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
+
+# ============================================================================
+# Save Results
+# ============================================================================
+
+# Save merged data to CSV file
+write_csv(merged_data, file = file.path(DATA_PATH, "fl_cc_programs.csv"))
+
+cat(sprintf("Results saved to: %s\n", file.path(DATA_PATH, "fl_cc_programs.csv")))
 
 ##### END SCRIPT #####
