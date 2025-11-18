@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2025-11-18
+
+### Added
+
+- CSV output functionality to both R script and R Markdown files
+- `readr` package dependency for CSV writing
+- Automated saving of analysis results to `data/fl_cc_programs.csv`
+- Console confirmation message showing where results were saved
+
+### Changed
+
+- Updated README to reflect CSV output capability in both scripts
+- Updated README to include `readr` in required packages
+- Updated project structure documentation to show generated output file
+
 ## [0.1.0] - 2025-10-29
 
 ### Added
@@ -50,5 +65,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Legacy R scripts from 2022 analysis (`cc-completers-corrected.R`, `cc-completers-final.R`, `check_duplicates.R`, `diagnose_data.R`)
 - Temporary R session files (`.RData`, `.Rhistory`) from scripts directory
 
-[unreleased]: https://github.com/community-college-completion/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/community-college-completion/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/community-college-completion/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/community-college-completion/releases/tag/v0.1.0
