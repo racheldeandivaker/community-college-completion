@@ -111,7 +111,8 @@ Merging Directory and CIPcode and getting top five certificate and associate pro
 merged_data <- left_join(clean_dir, clean_comp, by = "unitid") %>%
   filter(!is.na(awlevel), !is.na(ctotalt), !is.na(cipcode)) %>%  # Remove rows with missing completion data
   group_by(opeid, awlevel) %>%
-  slice_max(order_by = ctotalt, n = 5, with_ties = TRUE)
+  slice_max(order_by = ctotalt, n = 5, with_ties = TRUE) %>% 
+  filter(ctotalt >= 10) #keep programs where at least ten students completed
 
 cat(sprintf("Merged data: %d top programs\n", nrow(merged_data)))
 cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
@@ -119,6 +120,8 @@ cat(sprintf("Institutions represented: %d\n", n_distinct(merged_data$opeid)))
 
 
 ```
+
+
 
 ```{r save data}
 

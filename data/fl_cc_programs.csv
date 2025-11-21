@@ -13,7 +13,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 132851,00147100,12,1,1,23,College of Central Florida,190709,2,14
 132851,00147100,12,1,1,23,College of Central Florida,480508,2,11
 132851,00147100,12,1,1,23,College of Central Florida,510601,2,11
-132851,00147100,12,1,1,23,College of Central Florida,010302,2,5
 132851,00147100,12,1,1,23,College of Central Florida,240101,3,609
 132851,00147100,12,1,1,23,College of Central Florida,513801,3,110
 132851,00147100,12,1,1,23,College of Central Florida,010507,3,24
@@ -23,16 +22,8 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 133021,00147200,12,1,1,23,Chipola College,120401,2,14
 133021,00147200,12,1,1,23,Chipola College,480508,2,12
 133021,00147200,12,1,1,23,Chipola College,510904,2,10
-133021,00147200,12,1,1,23,Chipola College,111001,2,7
-133021,00147200,12,1,1,23,Chipola College,460415,2,2
 133021,00147200,12,1,1,23,Chipola College,240101,3,208
 133021,00147200,12,1,1,23,Chipola College,513801,3,39
-133021,00147200,12,1,1,23,Chipola College,310507,3,5
-133021,00147200,12,1,1,23,Chipola College,500502,3,2
-133021,00147200,12,1,1,23,Chipola College,110103,3,1
-133021,00147200,12,1,1,23,Chipola College,111001,3,1
-133021,00147200,12,1,1,23,Chipola College,131210,3,1
-133021,00147200,12,1,1,23,Chipola College,150201,3,1
 133386,00147500,12,1,1,23,Daytona State College,120401,2,86
 133386,00147500,12,1,1,23,Daytona State College,510904,2,49
 133386,00147500,12,1,1,23,Daytona State College,480508,2,40
@@ -44,10 +35,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 133386,00147500,12,1,1,23,Daytona State College,510904,3,23
 133386,00147500,12,1,1,23,Daytona State College,110201,3,22
 133508,00147700,12,1,1,23,Florida SouthWestern State College,510904,2,19
-133508,00147700,12,1,1,23,Florida SouthWestern State College,510714,2,5
-133508,00147700,12,1,1,23,Florida SouthWestern State College,110202,2,2
-133508,00147700,12,1,1,23,Florida SouthWestern State College,111001,2,2
-133508,00147700,12,1,1,23,Florida SouthWestern State College,190709,2,1
 133508,00147700,12,1,1,23,Florida SouthWestern State College,240101,3,1510
 133508,00147700,12,1,1,23,Florida SouthWestern State College,513801,3,248
 133508,00147700,12,1,1,23,Florida SouthWestern State College,430103,3,34
@@ -64,20 +51,11 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 133702,00148400,12,1,1,23,Florida State College at Jacksonville,520201,3,46
 133702,00148400,12,1,1,23,Florida State College at Jacksonville,111003,3,41
 133702,00148400,12,1,1,23,Florida State College at Jacksonville,190708,3,41
-133960,00148500,12,1,1,14,The College of the Florida Keys,010303,2,2
-133960,00148500,12,1,1,14,The College of the Florida Keys,120503,2,1
-133960,00148500,12,1,1,14,The College of the Florida Keys,470605,2,1
 133960,00148500,12,1,1,14,The College of the Florida Keys,513801,3,27
 133960,00148500,12,1,1,14,The College of the Florida Keys,240101,3,26
-133960,00148500,12,1,1,14,The College of the Florida Keys,030601,3,9
-133960,00148500,12,1,1,14,The College of the Florida Keys,520201,3,6
-133960,00148500,12,1,1,14,The College of the Florida Keys,520901,3,3
 134343,00149000,12,1,1,14,Gulf Coast State College,513901,2,29
 134343,00149000,12,1,1,14,Gulf Coast State College,510909,2,20
 134343,00149000,12,1,1,14,Gulf Coast State College,510601,2,11
-134343,00149000,12,1,1,14,Gulf Coast State College,120503,2,8
-134343,00149000,12,1,1,14,Gulf Coast State College,190709,2,7
-134343,00149000,12,1,1,14,Gulf Coast State College,510904,2,7
 134343,00149000,12,1,1,14,Gulf Coast State College,240101,3,381
 134343,00149000,12,1,1,14,Gulf Coast State College,513801,3,105
 134343,00149000,12,1,1,14,Gulf Coast State College,510909,3,23
@@ -110,23 +88,11 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 135160,00150100,12,1,1,23,Florida Gateway College,150501,2,11
 135160,00150100,12,1,1,23,Florida Gateway College,240101,3,329
 135160,00150100,12,1,1,23,Florida Gateway College,513801,3,53
-135160,00150100,12,1,1,23,Florida Gateway College,510806,3,8
-135160,00150100,12,1,1,23,Florida Gateway College,131210,3,7
-135160,00150100,12,1,1,23,Florida Gateway College,510904,3,7
-135160,00150100,12,1,1,23,Florida Gateway College,520201,3,7
 135188,00150200,12,1,1,14,Lake-Sumter State College,410301,2,17
-135188,00150200,12,1,1,14,Lake-Sumter State College,510714,2,6
-135188,00150200,12,1,1,14,Lake-Sumter State College,111001,2,2
-135188,00150200,12,1,1,14,Lake-Sumter State College,510705,2,1
 135188,00150200,12,1,1,14,Lake-Sumter State College,240101,3,651
 135188,00150200,12,1,1,14,Lake-Sumter State College,513801,3,60
 135188,00150200,12,1,1,14,Lake-Sumter State College,150000,3,21
-135188,00150200,12,1,1,14,Lake-Sumter State College,110103,3,5
-135188,00150200,12,1,1,14,Lake-Sumter State College,520201,3,5
 135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,190709,2,55
-135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,110202,2,8
-135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,521401,2,8
-135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,111001,2,2
 135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,240101,3,971
 135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,513801,3,170
 135391,00150400,12,1,1,23,State College of Florida-Manatee-Sarasota,520201,3,26
@@ -143,19 +109,11 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 135717,00150600,12,1,1,14,Miami Dade College,100304,3,49
 135717,00150600,12,1,1,14,Miami Dade College,510602,3,48
 136145,00150800,12,1,1,14,North Florida College,510714,2,10
-136145,00150800,12,1,1,14,North Florida College,513901,2,9
-136145,00150800,12,1,1,14,North Florida College,510904,2,7
 136145,00150800,12,1,1,14,North Florida College,240101,3,175
 136145,00150800,12,1,1,14,North Florida College,513801,3,40
-136145,00150800,12,1,1,14,North Florida College,520201,3,6
-136145,00150800,12,1,1,14,North Florida College,510904,3,5
-136145,00150800,12,1,1,14,North Florida College,430103,3,2
 136233,00151000,12,1,1,23,Northwest Florida State College,480508,2,22
 136233,00151000,12,1,1,23,Northwest Florida State College,510904,2,13
 136233,00151000,12,1,1,23,Northwest Florida State College,510601,2,11
-136233,00151000,12,1,1,23,Northwest Florida State College,510714,2,8
-136233,00151000,12,1,1,23,Northwest Florida State College,190709,2,4
-136233,00151000,12,1,1,23,Northwest Florida State College,470607,2,4
 136233,00151000,12,1,1,23,Northwest Florida State College,240101,3,736
 136233,00151000,12,1,1,23,Northwest Florida State College,513801,3,67
 136233,00151000,12,1,1,23,Northwest Florida State College,510911,3,16
@@ -185,10 +143,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 136473,00151300,12,1,1,23,Pensacola State College,510602,3,24
 136473,00151300,12,1,1,23,Pensacola State College,510910,3,13
 136516,00151400,12,1,1,23,Polk State College,190709,2,10
-136516,00151400,12,1,1,23,Polk State College,510714,2,7
-136516,00151400,12,1,1,23,Polk State College,510904,2,7
-136516,00151400,12,1,1,23,Polk State College,150000,2,5
-136516,00151400,12,1,1,23,Polk State College,111001,2,1
 136516,00151400,12,1,1,23,Polk State College,240101,3,984
 136516,00151400,12,1,1,23,Polk State College,513801,3,100
 136516,00151400,12,1,1,23,Polk State College,520201,3,28
@@ -219,19 +173,11 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 137315,00152200,12,1,1,23,South Florida State College,460303,2,19
 137315,00152200,12,1,1,23,South Florida State College,510904,2,19
 137315,00152200,12,1,1,23,South Florida State College,120401,2,13
-137315,00152200,12,1,1,23,South Florida State College,150501,2,7
-137315,00152200,12,1,1,23,South Florida State College,513901,2,6
 137315,00152200,12,1,1,23,South Florida State College,240101,3,215
 137315,00152200,12,1,1,23,South Florida State College,513801,3,64
 137315,00152200,12,1,1,23,South Florida State College,510911,3,10
-137315,00152200,12,1,1,23,South Florida State College,510602,3,7
-137315,00152200,12,1,1,23,South Florida State College,111001,3,6
-137315,00152200,12,1,1,23,South Florida State College,510904,3,6
 137281,00152300,12,1,1,23,Saint Johns River State College,510904,2,17
 137281,00152300,12,1,1,23,Saint Johns River State College,513901,2,14
-137281,00152300,12,1,1,23,Saint Johns River State College,111001,2,6
-137281,00152300,12,1,1,23,Saint Johns River State College,510801,2,4
-137281,00152300,12,1,1,23,Saint Johns River State College,510705,2,2
 137281,00152300,12,1,1,23,Saint Johns River State College,240101,3,630
 137281,00152300,12,1,1,23,Saint Johns River State College,513801,3,110
 137281,00152300,12,1,1,23,Saint Johns River State College,510911,3,14
@@ -241,8 +187,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 137078,00152800,12,1,1,23,St Petersburg College,110202,2,46
 137078,00152800,12,1,1,23,St Petersburg College,510904,2,36
 137078,00152800,12,1,1,23,St Petersburg College,520904,2,10
-137078,00152800,12,1,1,23,St Petersburg College,510702,2,9
-137078,00152800,12,1,1,23,St Petersburg College,520905,2,9
 137078,00152800,12,1,1,23,St Petersburg College,240101,3,2728
 137078,00152800,12,1,1,23,St Petersburg College,513801,3,313
 137078,00152800,12,1,1,23,St Petersburg College,520201,3,53
@@ -250,9 +194,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 137078,00152800,12,1,1,23,St Petersburg College,018301,3,50
 137759,00153300,12,1,1,14,Tallahassee Community College,190709,2,25
 137759,00153300,12,1,1,14,Tallahassee Community College,510716,2,11
-137759,00153300,12,1,1,14,Tallahassee Community College,510601,2,8
-137759,00153300,12,1,1,14,Tallahassee Community College,480508,2,7
-137759,00153300,12,1,1,14,Tallahassee Community College,510904,2,7
 137759,00153300,12,1,1,14,Tallahassee Community College,240101,3,2107
 137759,00153300,12,1,1,14,Tallahassee Community College,513801,3,122
 137759,00153300,12,1,1,14,Tallahassee Community College,131210,3,28
@@ -282,9 +223,6 @@ unitid,opeid,fips,sector,control,c21basic,instnm,cipcode,awlevel,ctotalt
 136400,01065200,12,1,1,23,Pasco-Hernando State College,513901,2,43
 136400,01065200,12,1,1,23,Pasco-Hernando State College,510904,2,40
 136400,01065200,12,1,1,23,Pasco-Hernando State College,110202,2,22
-136400,01065200,12,1,1,23,Pasco-Hernando State College,480508,2,7
-136400,01065200,12,1,1,23,Pasco-Hernando State College,510601,2,7
-136400,01065200,12,1,1,23,Pasco-Hernando State College,510909,2,7
 136400,01065200,12,1,1,23,Pasco-Hernando State College,240101,3,956
 136400,01065200,12,1,1,23,Pasco-Hernando State College,513801,3,121
 136400,01065200,12,1,1,23,Pasco-Hernando State College,110201,3,23

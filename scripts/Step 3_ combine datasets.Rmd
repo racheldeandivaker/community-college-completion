@@ -1,0 +1,59 @@
+---
+title: "Rural branch campuses - combining data"
+author: "Zyrashae Smith-Onyewu"
+date: "2025-11-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+rm(list = ls())
+
+library(tidyverse)
+library(readr)
+library(leaflet)
+library(tigris)
+library(tidycensus)
+library(sf)
+library(ggplot2)
+library(dplyr)
+
+knitr::opts_knit$set(root.dir = "~/GitHub/community-college-completion")
+setwd("~/GitHub/community-college-completion")
+
+
+library(here)   # For project-root-aware file paths
+
+# Set up data paths (relative to project root)
+# The here package automatically finds the project root directory
+# Data files are stored in the project's data/ directory
+DATA_PATH <- here("data")
+
+
+```
+
+
+
+```{r Import data}
+cc_programs <- read_csv("data/fl_cc_programs.csv")
+
+rural_cc_campuses <- read_csv("data/branch_campus_list.csv")
+
+```
+
+
+```{r Combine datasets }
+
+ sample <- rural_cc_campuses %>% 
+  select(unitid, parent_instnm, locationtype, g_location, address) %>% 
+  left_join(cc_programs,
+            by = "unitid")
+
+```
+```{r Save sample dataset}
+
+write_csv(sample, file = file.path(DATA_PATH, "initial_sample.csv"))
+
+
+```
+

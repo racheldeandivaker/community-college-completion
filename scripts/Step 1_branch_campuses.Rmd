@@ -41,7 +41,6 @@ campuses <- read.csv("~/GitHub/community-college-completion/data/SSTAR_data_1762
   select(-c(control, lastyear_ipeds, addr, city, fips, instnm, opeid, unitid_orig)) 
 
 
-
 ```
 
 
@@ -60,14 +59,17 @@ branch_campuses <- programs %>%
 
 ```{r Identify rural branch campuses}
 
+#Identify urban areas
 urban <- urban_areas(cb = FALSE, year = 2020) |>
   mutate(states = str_extract(NAME10, ",(.*)")) |>
   filter(states == ", FL" &
            UATYP10 != "R") #remove urban clusters, keep urban areas
 
+#Identify locations of branch campuses
 branch_sf <- branch_campuses %>% 
   st_as_sf(coords = c("lng", "lat"), crs = 4269)
 
+#filter for branch campuses in rural areas
 rural_branch_campuses <- st_filter(x = branch_sf, st_union(urban), .predicate = st_disjoint)
 
 
@@ -95,8 +97,9 @@ leaflet() %>%
 
 ```
 
-```{r Save sample}
 
+```{r Save sample}
+ 
 write_csv(rural_branch_campuses, file = file.path(DATA_PATH, "branch_campus_list.csv"))
 
 ```
